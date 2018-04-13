@@ -19,7 +19,7 @@ function jft_func( $atts ){
 	$jft = new DOMDocument;
 	
 	// Get the contents of JFT
-	$d->loadHTML(file_get_contents('http://jftna.org/jft/'));
+	$d->loadHTML(file_get_contents('https://jftna.org/jft/'));
 
 	// Parse and extract just the body
 	$body = $d->getElementsByTagName('body')->item(0);
