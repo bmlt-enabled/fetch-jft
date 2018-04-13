@@ -21,7 +21,7 @@ function jft_func( $atts ){
 	// Get the contents of JFT
 	$d->loadHTML(file_get_contents('http://jftna.org/jft/'));
 
-	// Parse just the body
+	// Parse and extract just the body
 	$body = $d->getElementsByTagName('body')->item(0);
 
 	foreach ($body->childNodes as $child) {
