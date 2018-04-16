@@ -1,14 +1,13 @@
-=== JFT Fetcher ===
+=== Fetch JFT ===
 
 Contributors: pjaudiomv
 Tags: jft, just for today, narcotics anonymous, na
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
 
 == Description ==
 
-The JFT Fetcher is a plugin that pulls the Just For Today from jftna.org and puts it on your page or post.
+The Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it on your page or post.
 
 
 
@@ -24,12 +23,16 @@ MORE INFORMATION
 
 This section describes how to install the plugin and get it working.
 
-1. Download and install the plugin from WordPress dashboard. You can also upload the entire JFT Fetcher Plugin folder to the /wp-content/plugins/ directory
+1. Download and install the plugin from WordPress dashboard. You can also upload the entire Fetch JFT Plugin folder to the /wp-content/plugins/ directory
 2. Activate the plugin through the Plugins menu in WordPress
 3. Add [jft] shortcode to your Wordpress page or post.
 
 
 == Changelog ==
+
+= 1.0.2 =
+
+* changed name
 
 = 1.0.1 =
 

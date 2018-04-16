@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: JFT Fetcher
+Plugin Name: Fetch JFT
 Plugin URI: http://wordpress.org/extend/jft/
 Author: Patrick J NERNA
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page.
-Version: 1.0.1
+Version: 1.0.2
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
