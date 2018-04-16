@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-The Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it on your page or post.
+Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it on your page or post.
 
 
 
