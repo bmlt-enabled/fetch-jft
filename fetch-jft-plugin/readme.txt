@@ -32,6 +32,10 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 1.1.1 =
+
+* Added Subscribe link by default, renamed widget to Fetch JFT to match plugin name.
+
 = 1.1.0 =
 
 * Added Widget to Plugin
