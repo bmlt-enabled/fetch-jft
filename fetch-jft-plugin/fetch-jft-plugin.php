@@ -35,13 +35,18 @@ function jft_func( $atts ){
 // create [jft] shortcode
 add_shortcode( 'jft', 'jft_func' );
 
+
+/** START Fetch JFT Widget **/
 // register JFT_Widget
 add_action( 'widgets_init', function(){
 	register_widget( 'JFT_Widget' );
 });
 
 class JFT_Widget extends WP_Widget {
-
+	/**
+	 * Sets up a new Fetch JFT widget instance.
+	 *
+	 */
 	public function __construct() {
 		$widget_ops = array( 
 			'classname' => 'JFT_widget',
@@ -49,6 +54,17 @@ class JFT_Widget extends WP_Widget {
 		);
 	parent::__construct( 'JFT_widget', 'Fetch JFT', $widget_ops );
 	}
+	
+	/**
+	 * Outputs the content for the current Fetch JFT widget instance.
+	 *
+	 *
+	 * @jft_func gets and parses the jft
+	 *
+	 * @param array $args     Display arguments including 'before_title', 'after_title',
+	 *                        'before_widget', and 'after_widget'.
+	 * @param array $instance Settings for the current Area Meetings Dropdown widget instance.
+	 */
 	
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
@@ -58,7 +74,10 @@ class JFT_Widget extends WP_Widget {
 		echo jft_func( $atts );
 		echo $args['after_widget'];
 	}
-
+	/**
+	* Outputs the settings form for the Fetch JFT widget.
+	*
+	*/
 	public function form( $instance ) {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Title', 'text_domain' );
 		?>
@@ -77,11 +96,20 @@ class JFT_Widget extends WP_Widget {
 		<?php
 	}
 
+	/**
+	* Handles updating settings for the current Fetch JFT widget instance.
+	*
+	* @param array $new_instance New settings for this instance as input by the user via
+	*                            WP_Widget::form().
+	* @param array $old_instance Old settings for this instance.
+	* @return array Updated settings to save.
+	*/
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 		return $instance;
 	}
 }
+/** END Fetch JFT Widget **/
 
 ?>
