@@ -8,7 +8,6 @@ function jft_plugin_admin_add_page() {
 function jft_plugin_settings() {
 	//register our settings
 	register_setting( 'jft-plugin-settings-group', 'jft_layout' );
-	//register_setting( 'jft-plugin-settings-group', 'jft_language' );
 }
 add_action( 'admin_init', 'jft_plugin_settings' );
 function jft_settings_page() { ?>
@@ -30,16 +29,6 @@ function jft_settings_page() { ?>
 						</select>
 		        	</td>
 		        </tr>
-		        <!-- <tr valign="top">
-		        	<th scope="row">Display Language</th>
-		        	<td>
-		        		<select id="jft_language" name="jft_language">
-							<option value="english" <?php if(esc_attr(get_option('jft_language'))=='english') echo 'selected="selected"'; ?>>English</option>
-							<option value="spanish" <?php if(esc_attr(get_option('jft_language'))=='spanish') echo 'selected="selected"'; ?>>Spanish</option>
-							<option value="french" <?php if(esc_attr(get_option('jft_language'))=='french') echo 'selected="selected"'; ?>>French</option>
-						</select>
-		        	</td>
-		        </tr> -->
 		    </table>			
 			<?php submit_button(); ?>
 		</form>
