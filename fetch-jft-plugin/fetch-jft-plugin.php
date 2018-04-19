@@ -31,7 +31,7 @@ function fetch_jft_plugin_page() {
        do_settings_sections( 'jft-plugin-settings-group' );
        ?>
   <h3>Fetch JFT Layout</h3>
-  <p>Change between a plain table and css.</p>
+  <p>Change between a plain table and css block elements.</p>
 			<table class="form-table">
 		        <tr valign="top">
 		        	<th scope="row">Layout</th>
