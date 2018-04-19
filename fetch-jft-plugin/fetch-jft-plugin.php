@@ -12,24 +12,62 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
 
+require_once('simple_html_dom.php');
+require_once('admin/jft-dashboard.php');
+add_action('admin_menu', 'jft_plugin_admin_add_page');
+
 function jft_func( $atts ){
-
-	$d = new DOMDocument;
-
-	$jft = new DOMDocument;
+	/*$jft_language = get_option(jft_language);
 	
+	switch ($jft_language) {
+		case 'english' :
+			$jft_language_url = 'https://jftna.org/jft/';
+			break;
+		case 'spanish':
+			$jft_language_url = 'https://forozonalatino.org/sxh';
+			break;
+		case 'french':
+			$jft_language_url = 'https://jftna.org/jft/';
+			break;
+		default:
+			$jft_language_url = 'http://jpa.narcotiquesanonymes.org/';		
+	}*/
+
 	// Get the contents of JFT
-	$d->loadHTML(file_get_contents('https://jftna.org/jft/'));
-
-	// Parse and extract just the body
-	$body = $d->getElementsByTagName('body')->item(0);
-
-	foreach ($body->childNodes as $child) {
-
-		$jft->appendChild($jft->importNode($child, true));
+	if(get_option(jft_layout) == 'block'){
+		$d = file_get_html('https://jftna.org/jft/');
+		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
+		$i = 0;
+		foreach($d->find(tr) as $element) {
+			if($i != 5) {
+				$formated_element = trim(strip_tags($element));
+				echo '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
+			}else{
+				$break_array = preg_split('/<br[^>]*>/i', $element);
+				foreach($break_array as $p) {
+					if(!empty($p)){
+						$content = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
+						echo preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $content); 
+					}
+				}
+			}
+			$i++; 
+		}
+	}else{
+		$d = new DOMDocument;
+		$jft = new DOMDocument;
+		
+		// Get the contents of JFT
+		$d->loadHTML(file_get_contents('https://jftna.org/jft/'));
+		// Parse and extract just the body
+		$body = $d->getElementsByTagName('body')->item(0);
+		foreach ($body->childNodes as $child) {
+			$jft->appendChild($jft->importNode($child, true));
+		}
+		// export just the html of body
+		echo $jft->saveHTML();
 	}
-	// export just the html of body
-	echo $jft->saveHTML(); ?>
+	?>
 	<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>
 	<?php	
 }
