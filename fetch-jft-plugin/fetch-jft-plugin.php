@@ -17,22 +17,6 @@ require_once('admin/jft-dashboard.php');
 add_action('admin_menu', 'jft_plugin_admin_add_page');
 
 function jft_func( $atts ){
-	/*$jft_language = get_option(jft_language);
-	
-	switch ($jft_language) {
-		case 'english' :
-			$jft_language_url = 'https://jftna.org/jft/';
-			break;
-		case 'spanish':
-			$jft_language_url = 'https://forozonalatino.org/sxh';
-			break;
-		case 'french':
-			$jft_language_url = 'https://jftna.org/jft/';
-			break;
-		default:
-			$jft_language_url = 'http://jpa.narcotiquesanonymes.org/';		
-	}*/
-
 	// Get the contents of JFT
 	if(get_option(jft_layout) == 'block'){
 		$d = file_get_html('https://jftna.org/jft/');
