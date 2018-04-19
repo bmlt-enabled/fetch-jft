@@ -29,9 +29,11 @@ function jft_func( $atts ){
 		$jft->appendChild($jft->importNode($child, true));
 	}
 	// export just the html of body
+	echo "<div class=\"jft-div\">";
 	echo $jft->saveHTML(); ?>
 	<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>
 	<?php	
+	echo "</div>";
 }
 
 // create [jft] shortcode
