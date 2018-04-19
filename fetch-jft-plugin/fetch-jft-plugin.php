@@ -64,7 +64,6 @@ function jft_func( $atts ){
 	if(get_option(jft_layout) == 'block'){
 		$d = file_get_html('https://jftna.org/jft/');
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
-		$jft_class = array('wp-jft','wp-jft','wp-jft','wp-jft','wp-jft','wp-jft','wp-jft','wp-jft');
 		$i = 0;
 		foreach($d->find(tr) as $element) {
 			if($i != 5) {
