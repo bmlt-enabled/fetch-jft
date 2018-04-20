@@ -14,13 +14,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 require_once('simple_html_dom.php');
 
-add_action('admin_menu', function() {
-    add_options_page( 'Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page' );
-});
+add_action('admin_menu', 'jft_options_menu');
 
-add_action( 'admin_init', function() {
-    register_setting( 'jft-plugin-settings-group', 'jft_layout' );
-});
+function jft_options_menu() {
+  add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
+}
+
+function jft_plugin_settings() {
+	//register our settings
+	register_setting( 'jft-plugin-settings-group', 'jft_layout' );
+}
+
+add_action( 'admin_init', 'jft_plugin_settings' );
 
 function fetch_jft_plugin_page() {
  ?>
@@ -51,7 +56,7 @@ function fetch_jft_plugin_page() {
 
 // add settings link to plugins page
 function plugin_add_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=fetch-jft-plugin">' . __( 'Settings' ) . '</a>';
+    $settings_link = '<a href="options-general.php?page=jft-plugin">' . __( 'Settings' ) . '</a>';
     array_push( $links, $settings_link );
   	return $links;
 }
