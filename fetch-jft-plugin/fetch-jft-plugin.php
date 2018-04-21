@@ -4,7 +4,7 @@ Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Author: Patrick J NERNA
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.1.1
+Version: 1.2.0
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -12,9 +12,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
 
-require_once('simple_html_dom.php');
+require_once('assets/simple_html_dom.php');
 require_once('admin/jft-dashboard.php');
-add_action('admin_menu', 'jft_plugin_admin_add_page');
+
 
 function jft_func( $atts ){
 	// Get the contents of JFT
@@ -135,5 +135,4 @@ class JFT_Widget extends WP_Widget {
 	}
 }
 /** END Fetch JFT Widget **/
-
 ?>
