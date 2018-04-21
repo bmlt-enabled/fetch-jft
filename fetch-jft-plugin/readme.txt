@@ -1,6 +1,6 @@
 === Fetch JFT ===
 
-Contributors: pjaudiomv
+Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
 Tested up to: 4.9.5
 Stable tag: 1.1.1
