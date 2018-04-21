@@ -30,10 +30,16 @@ function plugin_add_settings_link( $links ) {
 $plugin = plugin_basename( __FILE__ );
 add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
 
-function jft_func( $atts ){
-	//Retreive and set language for display
-	$jft_language = get_option(jft_language);
-	
+function jft_func($atts = []) {
+	extract(shortcode_atts(array(
+		'language'	=>	'',
+		'layout'	=>	''
+	), $atts));
+
+	//Set language and layout - shortcode parameter overrides admin settings
+	$jft_language = (!empty($language) ? trim(strtolower($language)) : get_option('jft_language'));
+	$jft_layout = (!empty($layout) ? trim(strtolower($layout)) : get_option('jft_layout'));
+
 	switch ($jft_language) {
 		case 'english' :
 			$jft_language_url = 'https://jftna.org/jft/';
@@ -52,8 +58,10 @@ function jft_func( $atts ){
 			$jft_language_dom_element = 'tr';		
 	}
 
+	$subscribe_link = '<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
+
 	// Get the contents of JFT
-	if(get_option(jft_layout) == 'table' && get_option(jft_language) == 'english') {
+	if($jft_layout == 'table' && $jft_language == 'english') {
 		$d = new DOMDocument;
 		$jft = new DOMDocument;
 		
@@ -65,37 +73,37 @@ function jft_func( $atts ){
 			$jft->appendChild($jft->importNode($child, true));
 		}
 		// export just the html of body
-		echo $jft->saveHTML();
+		return $jft->saveHTML();
 	}else{
 		$d = file_get_html($jft_language_url);
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
 		$i = 0;
+		$content = '';
 		if($jft_language == 'english') {
 			foreach($d->find($jft_language_dom_element) as $element) {
 				if($i != 5) {
 					$formated_element = trim(strip_tags($element));
-					echo '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
+					$content .= '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
 				}else{
 					$break_array = preg_split('/<br[^>]*>/i', $element);
 					foreach($break_array as $p) {
 						if(!empty($p)){
-							$content = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
-							echo preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $content); 
+							$formated_element = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
+							$content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element); 
 						}
 					}
 				}
 				$i++; 
 			}
 		} else {
+			$build_content = '';
 			foreach ($d->find($jft_language_dom_element) as $element) {
-				echo $element;
-				echo '<br><p id="jft_copyright"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").',  NA World Services, Inc. All Rights Reserved</a></p>';
+				$build_content .= $element;
 			}
+			$content = $build_content.' <br><p id="jft_copyright">Copyright (c) 2007-'.date("Y").', <a href="https://www.na.org/" target="_blank">NA World Services, Inc.</a> All Rights Reserved</p> ';		
 		}
-	}
-	?>
-	<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>
-	<?php	
+		return $content.' '.$subscribe_link;
+	}	
 }
 
 // create [jft] shortcode
