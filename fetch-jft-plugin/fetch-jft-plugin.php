@@ -15,34 +15,50 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 require_once('assets/simple_html_dom.php');
 require_once('admin/jft-dashboard.php');
 
+// create admin menu settings page
+add_action('admin_menu', 'jft_options_menu');
+function jft_options_menu() {
+  add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
+}
+
+// add settings link to plugins page
+function plugin_add_settings_link( $links ) {
+    $settings_link = '<a href="options-general.php?page=jft-plugin">' . __( 'Settings' ) . '</a>';
+    array_unshift( $links, $settings_link );
+  	return $links;
+}
+$plugin = plugin_basename( __FILE__ );
+add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
 
 function jft_func( $atts ){
+	//Retreive and set language for display
+	$jft_language = get_option(jft_language);
+	
+	switch ($jft_language) {
+		case 'english' :
+			$jft_language_url = 'https://jftna.org/jft/';
+			$jft_language_dom_element = 'tr';
+			break;
+		case 'spanish':
+			$jft_language_url = 'https://forozonalatino.org/sxh';
+			$jft_language_dom_element = 'div[id=sx-wrapper]';
+			break;
+		case 'french':
+			$jft_language_url = 'http://jpa.narcotiquesanonymes.org/';
+			$jft_language_dom_element = 'div[class=contenu-principal]';
+			break;
+		default:
+			$jft_language_url = 'https://jftna.org/jft/';
+			$jft_language_dom_element = 'tr';		
+	}
+
 	// Get the contents of JFT
-	if(get_option(jft_layout) == 'block'){
-		$d = file_get_html('https://jftna.org/jft/');
-		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
-		$i = 0;
-		foreach($d->find(tr) as $element) {
-			if($i != 5) {
-				$formated_element = trim(strip_tags($element));
-				echo '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
-			}else{
-				$break_array = preg_split('/<br[^>]*>/i', $element);
-				foreach($break_array as $p) {
-					if(!empty($p)){
-						$content = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
-						echo preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $content); 
-					}
-				}
-			}
-			$i++; 
-		}
-	}else{
+	if(get_option(jft_layout) == 'table' && get_option(jft_language) == 'english') {
 		$d = new DOMDocument;
 		$jft = new DOMDocument;
 		
 		// Get the contents of JFT
-		$d->loadHTML(file_get_contents('https://jftna.org/jft/'));
+		$d->loadHTML(file_get_contents($jft_language_url));
 		// Parse and extract just the body
 		$body = $d->getElementsByTagName('body')->item(0);
 		foreach ($body->childNodes as $child) {
@@ -50,6 +66,32 @@ function jft_func( $atts ){
 		}
 		// export just the html of body
 		echo $jft->saveHTML();
+	}else{
+		$d = file_get_html($jft_language_url);
+		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
+		$i = 0;
+		if($jft_language == 'english') {
+			foreach($d->find($jft_language_dom_element) as $element) {
+				if($i != 5) {
+					$formated_element = trim(strip_tags($element));
+					echo '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
+				}else{
+					$break_array = preg_split('/<br[^>]*>/i', $element);
+					foreach($break_array as $p) {
+						if(!empty($p)){
+							$content = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
+							echo preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $content); 
+						}
+					}
+				}
+				$i++; 
+			}
+		} else {
+			foreach ($d->find($jft_language_dom_element) as $element) {
+				echo $element;
+				echo '<br><p id="jft_copyright"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").',  NA World Services, Inc. All Rights Reserved</a></p>';
+			}
+		}
 	}
 	?>
 	<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>
