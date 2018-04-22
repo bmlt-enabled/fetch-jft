@@ -73,7 +73,7 @@ function jft_func($atts = []) {
 			$jft->appendChild($jft->importNode($child, true));
 		}
 		// export just the html of body
-		return $jft->saveHTML();
+		return $jft->saveHTML().' '.$subscribe_link;
 	}else{
 		$d = file_get_html($jft_language_url);
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
