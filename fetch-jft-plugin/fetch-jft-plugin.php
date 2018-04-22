@@ -79,7 +79,7 @@ function jft_func($atts = []) {
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
 		$jft_class = 'jft-rendered-element';
 		$i = 0;
-		$k = 0;
+		$k = 1;
 		$content = '';
 		if($jft_language == 'english') {
 			$content = '<div id="jft-container" class="'.$jft_class.'">';
@@ -94,8 +94,8 @@ function jft_func($atts = []) {
 						if(!empty($p)){
 							$formated_element = '<p id="'.$jft_ids[$i].'-'.$k.'" class="'.$jft_class.'">'.trim($p).'</p>';
 							$content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element); 
+							$k++;
 						}
-						$k++;
 					}
 					$content .= '</div>';
 				}
