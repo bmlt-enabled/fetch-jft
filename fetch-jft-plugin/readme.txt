@@ -17,9 +17,17 @@ Languages: English, Spanish, French [jft language=""]
 Layout: Table, Block [jft layout=""]
 -- Shortcode parameters can be combined and accept either uppercase or lowercase
 
-EXAMPLE
+EXAMPLES
 
 <a href="https://www.mvana.org/just-for-today/">https://www.mvana.org/just-for-today/</a>
+<a href="https://newyorkna.org/information/just-for-today/">https://newyorkna.org/information/just-for-today/</a>
+<a href="https://www.na-ireland.org/for-our-members/just-for-today/">https://www.na-ireland.org/for-our-members/just-for-today/</a>
+<a href="https://hillcountryna.org/just-for-today/">https://hillcountryna.org/just-for-today/</a>
+<a href="https://www.otwna.org/just-for-today/">https://www.otwna.org/just-for-today/</a>
+<a href="http://emeraldcoastareana.org/">http://emeraldcoastareana.org/</a>
+
+As A Widget
+<a href="http://crossroadsarea.org/events-activities/">http://crossroadsarea.org/events-activities/</a>
 
 MORE INFORMATION
 
