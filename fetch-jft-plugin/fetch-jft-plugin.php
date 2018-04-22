@@ -77,24 +77,31 @@ function jft_func($atts = []) {
 	}else{
 		$d = file_get_html($jft_language_url);
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
+		$jft_class = 'jft-rendered-element';
 		$i = 0;
+		$k = 0;
 		$content = '';
 		if($jft_language == 'english') {
+			$content = '<div id="jft-container" class="'.$jft_class.'">';
 			foreach($d->find($jft_language_dom_element) as $element) {
 				if($i != 5) {
 					$formated_element = trim(strip_tags($element));
-					$content .= '<div id="'.$jft_ids[$i].'">'.$formated_element.'</div>';
+					$content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">'.$formated_element.'</div>';
 				}else{
 					$break_array = preg_split('/<br[^>]*>/i', $element);
+					$content .= '<div id="'.$jft_ids[$i].'">';
 					foreach($break_array as $p) {
 						if(!empty($p)){
-							$formated_element = '<p class="'.$jft_ids[$i].'">'.trim($p).'</p>';
+							$formated_element = '<p id="'.$jft_ids[$i].'-'.$k.'" class="'.$jft_class.'">'.trim($p).'</p>';
 							$content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element); 
 						}
+						$k++;
 					}
+					$content .= '</div>';
 				}
 				$i++; 
 			}
+			$content .= '</div>';
 		} else {
 			$build_content = '';
 			foreach ($d->find($jft_language_dom_element) as $element) {
