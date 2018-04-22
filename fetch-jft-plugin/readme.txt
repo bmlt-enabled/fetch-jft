@@ -11,7 +11,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it on your page or post. Use the widget Fetch JFT to add to your sidebar or footer.
 
-
+SHORTCODE
+Basic: [jft]
+Languages: English, Spanish, French [jft language=""]
+Layout: Table, Block [jft layout=""]
+-- Shortcode parameters can be combined and accept either uppercase or lowercase
 
 EXAMPLE
 
