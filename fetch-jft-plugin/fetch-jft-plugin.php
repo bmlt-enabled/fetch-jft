@@ -99,7 +99,7 @@ function jft_func($atts = []) {
 			foreach ($d->find($jft_language_dom_element) as $element) {
 				$build_content .= $element;
 			}
-			$content = $build_content.' <br><p id="jft_copyright">Copyright (c) 2007-'.date("Y").', <a href="https://www.na.org/" target="_blank">NA World Services, Inc.</a> All Rights Reserved</p> ';		
+			$content = $build_content.' <br><p id="jft_copyright"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';		
 		}
 		return $content.' '.$subscribe_link;
 	}	
