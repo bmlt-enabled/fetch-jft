@@ -61,10 +61,18 @@ function jft_func($atts = []) {
 
 	// Get the contents of JFT
 	if($jft_layout == 'table' && $jft_language == 'english') {
-		$d = new DOMDocument;
+		// Su
+		/*ini_set('display_errors','Off');
+		ini_set('error_reporting', E_ALL );
+		define('WP_DEBUG', false);
+		define('WP_DEBUG_DISPLAY', false);*/
+
+		/*$d = new DOMDocument;
 		$jft = new DOMDocument;
 		
 		// Get the contents of JFT
+		$d->strictErrorChecking = FALSE;
+		$jft->strictErrorChecking = FALSE;
 		$d->loadHTML(file_get_contents($jft_language_url));
 		// Parse and extract just the body
 		$body = $d->getElementsByTagName('body')->item(0);
@@ -72,7 +80,11 @@ function jft_func($atts = []) {
 			$jft->appendChild($jft->importNode($child, true));
 		}
 		// export just the html of body
-		return $jft->saveHTML().' '.$subscribe_link;
+		return $jft->saveHTML().' '.$subscribe_link;*/
+
+		$d = file_get_html($jft_language_url);
+		$d->find('table');
+		return $d.$subscribe_link;
 	}else{
 		$d = file_get_html($jft_language_url);
 		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
