@@ -66,6 +66,7 @@ function jft_func($atts = []) {
   if($jft_layout == 'block' && $jft_language == 'english') {
    libxml_use_internal_errors(true);
   	$url = file_get_contents($jft_language_url);
+   libxml_clear_errors();
    libxml_use_internal_errors(false);
 	 	$d = new DOMDocument();
 	 	$d->validateOnParse = true;
@@ -119,6 +120,7 @@ function jft_func($atts = []) {
 			$jft = new DOMDocument;
 			libxml_use_internal_errors(true);
 			$d1->loadHTML(file_get_contents($jft_language_url));
+   libxml_clear_errors();
 			libxml_use_internal_errors(false);
 			$xpath = new DOMXpath($d1);
 			$body = $xpath->query("//$jft_language_dom_element");
