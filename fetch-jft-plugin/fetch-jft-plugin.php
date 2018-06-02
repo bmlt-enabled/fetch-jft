@@ -63,7 +63,10 @@ function jft_func($atts = []) {
 	$subscribe_link = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
  
 	// Get the contents of JFT
+  if($jft_layout == 'block' && $jft_language == 'english') {
+   libxml_use_internal_errors(true);
   	$url = file_get_contents($jft_language_url);
+   libxml_use_internal_errors(false);
 	 	$d = new DOMDocument();
 	 	$d->validateOnParse = true;
 		 $d->loadHTML($url);
@@ -71,9 +74,8 @@ function jft_func($atts = []) {
 	 	$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
  		$jft_class = 'jft-rendered-element';
 	 	$i = 0;
-		$k = 1;
-		$content = '';
-		if($jft_layout == 'block' && $jft_language == 'english') {
+		 $k = 1;
+		 $content = '';
 			$content = '<div id="jft-container" class="'.$jft_class.'">';
 
 			foreach($d->getElementsByTagName('tr') as $element) {
