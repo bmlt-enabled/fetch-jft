@@ -16,7 +16,7 @@ require_once('admin/jft-dashboard.php');
 // create admin menu settings page
 add_action('admin_menu', 'jft_options_menu');
 function jft_options_menu() {
-	add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
+ add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
 }
 
 // add settings link to plugins page
@@ -73,7 +73,7 @@ function jft_func($atts = []) {
 	 	$i = 0;
 		$k = 1;
 		$content = '';
-		if ($jft_layout == 'block' && $jft_language == 'english') {
+		if($jft_layout == 'block' && $jft_language == 'english') {
 			$content = '<div id="jft-container" class="'.$jft_class.'">';
 
 			foreach($d->getElementsByTagName('tr') as $element) {
@@ -145,8 +145,8 @@ class JFT_Widget extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array( 
-			'classname'		=> 'JFT_widget',
-			'description'	=> 'Displays the Just For Today',
+			'classname' => 'JFT_widget',
+			'description' => 'Displays the Just For Today',
 		);
 	parent::__construct( 'JFT_widget', 'Fetch JFT', $widget_ops );
 	}
