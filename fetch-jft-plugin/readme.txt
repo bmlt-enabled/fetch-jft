@@ -3,7 +3,7 @@
 Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
 Tested up to: 4.9.6
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 1.3.1 =
+
+* Suppress warnings and moved if tag for block layout up.
 
 = 1.3.0 =
 
