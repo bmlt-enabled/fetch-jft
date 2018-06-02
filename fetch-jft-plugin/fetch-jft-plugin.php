@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.2.2
+Version: 1.3.0
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -11,20 +11,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
 
-require_once('assets/simple_html_dom.php');
 require_once('admin/jft-dashboard.php');
 
 // create admin menu settings page
 add_action('admin_menu', 'jft_options_menu');
 function jft_options_menu() {
-  add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
+	add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
 }
 
 // add settings link to plugins page
 function plugin_add_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=jft-plugin">' . __( 'Settings' ) . '</a>';
-    array_unshift( $links, $settings_link );
-  	return $links;
+	$settings_link = '<a href="options-general.php?page=jft-plugin">' . __( 'Settings' ) . '</a>';
+	array_unshift( $links, $settings_link );
+	return $links;
 }
 $plugin = plugin_basename( __FILE__ );
 add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
@@ -42,91 +41,96 @@ function jft_func($atts = []) {
 	switch ($jft_language) {
 		case 'english' :
 			$jft_language_url = 'https://jftna.org/jft/';
-			$jft_language_dom_element = 'tr';
+			$jft_language_dom_element = 'table';
+   $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
 			break;
 		case 'spanish':
 			$jft_language_url = 'https://forozonalatino.org/sxh';
-			$jft_language_dom_element = 'div[id=sx-wrapper]';
+			$jft_language_dom_element = '*[@id=\'sx-wrapper\']';
+   $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright 2017 NA World Services, Inc. Todos los Derechos Reservados.</p>';
 			break;
 		case 'french':
 			$jft_language_url = 'http://jpa.narcotiquesanonymes.org/';
-			$jft_language_dom_element = 'div[class=contenu-principal]';
+			$jft_language_dom_element = '*[@class=\'contenu-principal\']';
+   $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
 			break;
 		default:
 			$jft_language_url = 'https://jftna.org/jft/';
-			$jft_language_dom_element = 'tr';		
+			$jft_language_dom_element = 'table';		
+   $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
 	}
-
-	$subscribe_link = '<div align="right"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
-
+ 
+	$subscribe_link = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
+ 
 	// Get the contents of JFT
-	if($jft_layout == 'table' && $jft_language == 'english') {
-		// Su
-		/*ini_set('display_errors','Off');
-		ini_set('error_reporting', E_ALL );
-		define('WP_DEBUG', false);
-		define('WP_DEBUG_DISPLAY', false);*/
-
-		/*$d = new DOMDocument;
-		$jft = new DOMDocument;
-		
-		// Get the contents of JFT
-		$d->strictErrorChecking = FALSE;
-		$jft->strictErrorChecking = FALSE;
-		$d->loadHTML(file_get_contents($jft_language_url));
-		// Parse and extract just the body
-		$body = $d->getElementsByTagName('body')->item(0);
-		foreach ($body->childNodes as $child) {
-			$jft->appendChild($jft->importNode($child, true));
-		}
-		// export just the html of body
-		return $jft->saveHTML().' '.$subscribe_link;*/
-
-		$d = file_get_html($jft_language_url);
-		$d->find('table');
-		return $d.$subscribe_link;
-	}else{
-		$d = file_get_html($jft_language_url);
-		$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
-		$jft_class = 'jft-rendered-element';
-		$i = 0;
+  	$url = file_get_contents($jft_language_url);
+	 	$d = new DOMDocument();
+	 	$d->validateOnParse = true;
+		 $d->loadHTML($url);
+   
+	 	$jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
+ 		$jft_class = 'jft-rendered-element';
+	 	$i = 0;
 		$k = 1;
 		$content = '';
-		if($jft_language == 'english') {
+		if ($jft_layout == 'block' && $jft_language == 'english') {
 			$content = '<div id="jft-container" class="'.$jft_class.'">';
-			foreach($d->find($jft_language_dom_element) as $element) {
+
+			foreach($d->getElementsByTagName('tr') as $element) {
 				if($i != 5) {
-					$formated_element = trim(strip_tags($element));
+					$formated_element = trim($element->nodeValue);
 					$content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">'.$formated_element.'</div>';
-				}else{
-					$break_array = preg_split('/<br[^>]*>/i', $element);
-					$content .= '<div id="'.$jft_ids[$i].'">';
+				} else {
+					$dom = new DOMDocument();
+					$dom->loadHTML(file_get_contents($jft_language_url));     
+					$values = array();
+					$xpath = new DOMXPath($dom);
+					foreach($xpath->query('//tr') as $row) {
+						$row_values = array();
+						foreach($xpath->query('td', $row) as $cell) {
+							$innerHTML= ''; 
+							$children = $cell->childNodes; 
+							foreach ($children as $child) {
+								$innerHTML .= $child->ownerDocument->saveXML( $child );
+							} 
+							$row_values[] = $innerHTML;
+						}
+						$values[] = $row_values;
+					}
+					$break_array = preg_split('/<br[^>]*>/i', (join('', $values[5])));
+					$content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">';
 					foreach($break_array as $p) {
 						if(!empty($p)){
 							$formated_element = '<p id="'.$jft_ids[$i].'-'.$k.'" class="'.$jft_class.'">'.trim($p).'</p>';
-							$content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element); 
+							$content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element);
 							$k++;
 						}
 					}
 					$content .= '</div>';
 				}
-				$i++; 
+				$i++;
 			}
+   $content .= $subscribe_link;
 			$content .= '</div>';
 		} else {
-			$build_content = '';
-			foreach ($d->find($jft_language_dom_element) as $element) {
-				$build_content .= $element;
+			$d1 = new DOMDocument;
+			$jft = new DOMDocument;
+			libxml_use_internal_errors(true);
+			$d1->loadHTML(file_get_contents($jft_language_url));
+			libxml_use_internal_errors(false);
+			$xpath = new DOMXpath($d1);
+			$body = $xpath->query("//$jft_language_dom_element");
+			foreach ($body as $child) {
+				$jft->appendChild($jft->importNode($child, true));
 			}
-			$content = $build_content.' <br><p id="jft_copyright"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';		
+			$content .= $jft->saveHTML();
+			$content .= $jft_language_footer;
 		}
-		return $content.' '.$subscribe_link;
-	}	
+  return $content;
 }
 
 // create [jft] shortcode
 add_shortcode( 'jft', 'jft_func' );
-
 
 /** START Fetch JFT Widget **/
 // register JFT_Widget
@@ -141,22 +145,22 @@ class JFT_Widget extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array( 
-			'classname' => 'JFT_widget',
-			'description' => 'Displays the Just For Today',
+			'classname'		=> 'JFT_widget',
+			'description'	=> 'Displays the Just For Today',
 		);
 	parent::__construct( 'JFT_widget', 'Fetch JFT', $widget_ops );
 	}
 	
 	/**
-	 * Outputs the content for the current Fetch JFT widget instance.
-	 *
-	 *
-	 * @jft_func gets and parses the jft
-	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Area Meetings Dropdown widget instance.
-	 */
+	* Outputs the content for the current Fetch JFT widget instance.
+	*
+	*
+	* @jft_func gets and parses the jft
+	*
+	* @param array $args     Display arguments including 'before_title', 'after_title',
+	*                        'before_widget', and 'after_widget'.
+	* @param array $instance Settings for the current Area Meetings Dropdown widget instance.
+	*/
 	
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
