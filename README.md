@@ -4,8 +4,11 @@ Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it o
 
 # SHORTCODE
 Basic: [jft]
+
 Languages: English, Spanish, French [jft language=""]
+
 Layout: Table, Block [jft layout=""]
+
 -- Shortcode parameters can be combined and accept either uppercase or lowercase
 
 # EXAMPLES
@@ -23,6 +26,7 @@ Layout: Table, Block [jft layout=""]
 [http://emeraldcoastareana.org/](http://emeraldcoastareana.org/)
 
 As A Widget
+
 [http://crossroadsarea.org/events-activities/](http://crossroadsarea.org/events-activities/)
 
 # MORE INFORMATION
