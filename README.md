@@ -11,10 +11,15 @@ Layout: Table, Block [jft layout=""]
 # EXAMPLES
 
 [https://www.mvana.org/just-for-today/](https://www.mvana.org/just-for-today/)
+
 [https://newyorkna.org/information/just-for-today/](https://newyorkna.org/information/just-for-today/)
+
 [https://www.na-ireland.org/for-our-members/just-for-today/](https://www.na-ireland.org/for-our-members/just-for-today/)
+
 [https://hillcountryna.org/just-for-today/](https://hillcountryna.org/just-for-today/)
+
 [https://www.otwna.org/just-for-today/](https://www.otwna.org/just-for-today/)
+
 [http://emeraldcoastareana.org/](http://emeraldcoastareana.org/)
 
 As A Widget
