@@ -44,6 +44,10 @@ This section describes how to install the plugin and get it working.
 
 # Changelog
 
+= 1.3.2 =
+
+* Fetch French JFT over HTTPS.
+
 = 1.3.1 =
 
 * Suppress warnings and moved if tag for block layout up.

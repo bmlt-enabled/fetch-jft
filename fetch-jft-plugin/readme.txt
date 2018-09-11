@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 4.9.6
-Stable tag: 1.3.1
+Tested up to: 4.9.8
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Fetch French JFT over HTTPS.
 
 = 1.3.1 =
 
