@@ -50,7 +50,7 @@ function jft_func($atts = []) {
    $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright 2017 NA World Services, Inc. Todos los Derechos Reservados.</p>';
 			break;
 		case 'french':
-			$jft_language_url = 'http://jpa.narcotiquesanonymes.org/';
+			$jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
 			$jft_language_dom_element = '*[@class=\'contenu-principal\']';
    $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
 			break;
