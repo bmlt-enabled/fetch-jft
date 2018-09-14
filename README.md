@@ -44,6 +44,10 @@ This section describes how to install the plugin and get it working.
 
 # Changelog
 
+= 1.3.3 =
+
+* Make use of Wordpress built in wp_remote_fopen function as some servers disable php’s file_get_contents. This will try fopen first then curl.
+
 = 1.3.2 =
 
 * Fetch French JFT over HTTPS.

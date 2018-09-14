@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.3.2
+Version: 1.3.3
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -65,7 +65,7 @@ function jft_func($atts = []) {
 	// Get the contents of JFT
   if($jft_layout == 'block' && $jft_language == 'english') {
    libxml_use_internal_errors(true);
-  	$url = file_get_contents($jft_language_url);
+  	$url = wp_remote_fopen($jft_language_url);
    libxml_clear_errors();
    libxml_use_internal_errors(false);
 	 	$d = new DOMDocument();
@@ -85,7 +85,7 @@ function jft_func($atts = []) {
 					$content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">'.$formated_element.'</div>';
 				} else {
 					$dom = new DOMDocument();
-					$dom->loadHTML(file_get_contents($jft_language_url));     
+					$dom->loadHTML(wp_remote_fopen($jft_language_url));     
 					$values = array();
 					$xpath = new DOMXPath($dom);
 					foreach($xpath->query('//tr') as $row) {
@@ -119,7 +119,7 @@ function jft_func($atts = []) {
 			$d1 = new DOMDocument;
 			$jft = new DOMDocument;
 			libxml_use_internal_errors(true);
-			$d1->loadHTML(file_get_contents($jft_language_url));
+			$d1->loadHTML(wp_remote_fopen($jft_language_url));
    libxml_clear_errors();
 			libxml_use_internal_errors(false);
 			$xpath = new DOMXpath($d1);

@@ -3,7 +3,7 @@
 Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
 Tested up to: 4.9.8
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 1.3.3 =
+
+* Make use of Wordpress built in wp_remote_fopen function as some servers disable php’s file_get_contents. This will try fopen first then curl.
 
 = 1.3.2 =
 
