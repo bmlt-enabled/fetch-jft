@@ -3,7 +3,7 @@
 Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
 Tested up to: 4.9.8
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it o
 
 SHORTCODE
 Basic: [jft]
-Languages: English, Spanish, French [jft language=""]
+Languages: English, French, Portuguese, Spanish [jft language=""]
 Layout: Table, Block [jft layout=""]
 -- Shortcode parameters can be combined and accept either uppercase or lowercase
 
@@ -43,6 +43,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 1.3.4 =
+
+* Added Portuguese language from NA Brazil.
 
 = 1.3.3 =
 

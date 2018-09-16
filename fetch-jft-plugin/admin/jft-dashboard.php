@@ -27,8 +27,9 @@ function fetch_jft_plugin_page() { ?>
                     <td>
                         <select id="jft_language" name="jft_language">
                             <option value="english" <?php if(esc_attr(get_option('jft_language'))=='english') echo 'selected="selected"'; ?>>English</option>
-                            <option value="spanish" <?php if(esc_attr(get_option('jft_language'))=='spanish') echo 'selected="selected"'; ?>>Spanish</option>
                             <option value="french" <?php if(esc_attr(get_option('jft_language'))=='french') echo 'selected="selected"'; ?>>French</option>
+                            <option value="portuguese" <?php if(esc_attr(get_option('jft_language'))=='portuguese') echo 'selected="selected"'; ?>>Portuguese</option>
+                            <option value="spanish" <?php if(esc_attr(get_option('jft_language'))=='spanish') echo 'selected="selected"'; ?>>Spanish</option>
                         </select>
                         <p class="description">Choose the language for the JFT Display.<br> <strong>Languages other then English only works with raw HTML layout.</strong></p>
                     </td>
