@@ -44,6 +44,12 @@ This section describes how to install the plugin and get it working.
 
 # Changelog
 
+= 1.4.0 =
+
+* Tested for WP 5.0.
+* Sanitize attributes.
+* Add logo.
+
 = 1.3.4 =
 
 * Added Portuguese language from NA Brazil.
