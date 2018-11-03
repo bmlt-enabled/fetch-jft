@@ -44,6 +44,10 @@ This section describes how to install the plugin and get it working.
 
 # Changelog
 
+= 1.4.1 =
+
+* Added custom css text box for settings page.
+
 = 1.4.0 =
 
 * Tested for WP 5.0.
