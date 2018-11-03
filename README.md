@@ -44,6 +44,10 @@ This section describes how to install the plugin and get it working.
 
 # Changelog
 
+= 1.4.4 =
+
+* added screenshot.
+
 = 1.4.3 =
 
 * one more bump.
