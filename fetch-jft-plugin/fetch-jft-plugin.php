@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.4.4
+Version: 1.5.0
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -30,8 +30,8 @@ add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
 
 function jft_func($atts = []) {
     extract(shortcode_atts(array(
-        'language'	=>	'',
-        'layout'	=>	''
+        'language'  =>  '',
+        'layout'    =>  ''
     ), $atts));
 
     //Set language and layout - shortcode parameter overrides admin settings
@@ -57,7 +57,11 @@ function jft_func($atts = []) {
         case 'portuguese':
             $jft_language_url = 'http://www.na.org.br/meditacao';
             $jft_language_dom_element = '*[@class=\'content-home\']';
-   $jft_language_footer = ' <div class=\'footer\'>Todos os direitos reservados à: http://www.na.org.br</div> ';
+            $jft_language_footer = ' <div class=\'footer\'>Todos os direitos reservados à: http://www.na.org.br</div> ';
+            break;
+        case 'german':
+            $jft_language_url = 'http://www.narcotics-anonymous.de/nfh/nfh_include.php';
+            $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.narcotics-anonymous.de/nur-fuer-heute-anmeldung.html" target="_blank">Anmeldung</a></div>';
             break;
         default:
             $jft_language_url = 'https://jftna.org/jft/';
@@ -120,12 +124,18 @@ function jft_func($atts = []) {
             }
    $content .= $subscribe_link;
             $content .= '</div>';
+        } elseif ($jft_language == 'german') {
+            date_default_timezone_set('Europe/Berlin');
+            $content .= '<div id="jft-container" class="jft-rendered-element">';
+            $content .= '<img class="jft-image" src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif">';
+            $content .= $jft_language_footer;
+            $content .= '</div>';
         } else {
             $d1 = new DOMDocument;
             $jft = new DOMDocument;
             libxml_use_internal_errors(true);
             $d1->loadHTML(wp_remote_fopen($jft_language_url));
-   libxml_clear_errors();
+            libxml_clear_errors();
             libxml_use_internal_errors(false);
             $xpath = new DOMXpath($d1);
             $body = $xpath->query("//$jft_language_dom_element");
