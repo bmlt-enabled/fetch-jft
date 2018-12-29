@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.5.1
+Version: 1.5.2
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -47,7 +47,7 @@ function jft_func($atts = []) {
         case 'spanish':
             $jft_language_url = 'https://forozonalatino.org/sxh';
             $jft_language_dom_element = '*[@id=\'sx-wrapper\']';
-            $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright 2017 NA World Services, Inc. Todos los Derechos Reservados.</p>';
+            $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright ' .date("Y"). ' NA World Services, Inc. Todos los Derechos Reservados.</p>';
             break;
         case 'french':
             $jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
@@ -67,6 +67,10 @@ function jft_func($atts = []) {
             $jft_language_url = 'https://na-italia.org/solo-per-oggi';
             $jft_language_dom_element = '*[@class=\'region region-content\']';
             $jft_language_footer = ' <div class=\'footer\'>Narcotici Anonimi Italia: <a href="https://www.na.org/" target="_blank">https://na-italia.org</a></div> ';
+            break;
+        case 'swedish':
+            $jft_language_url = 'https://www.nasverige.org/dagens-text-img/';
+            $jft_language_footer = ' <div class=\'footer\'>Copyright ' . date("Y") . ' - Anonyma Narkomaner NA Sverige.</div> ';
             break;
         default:
             $jft_language_url = 'https://jftna.org/jft/';
@@ -129,27 +133,33 @@ function jft_func($atts = []) {
             }
    $content .= $subscribe_link;
             $content .= '</div>';
-        } elseif ($jft_language == 'german') {
-            date_default_timezone_set('Europe/Berlin');
-            $content .= '<div id="jft-container" class="jft-rendered-element">';
-            $content .= '<img class="jft-image" src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif">';
-            $content .= $jft_language_footer;
-            $content .= '</div>';
-        } else {
-            $d1 = new DOMDocument;
-            $jft = new DOMDocument;
-            libxml_use_internal_errors(true);
-            $d1->loadHTML(wp_remote_fopen($jft_language_url));
-            libxml_clear_errors();
-            libxml_use_internal_errors(false);
-            $xpath = new DOMXpath($d1);
-            $body = $xpath->query("//$jft_language_dom_element");
-            foreach ($body as $child) {
-                $jft->appendChild($jft->importNode($child, true));
-            }
-            $content .= $jft->saveHTML();
-            $content .= $jft_language_footer;
-        }
+  } elseif ($jft_language == 'german') {
+      date_default_timezone_set('Europe/Berlin');
+      $content .= '<div id="jft-container" class="jft-rendered-element">';
+      $content .= '<img src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif" class="jft-image">';
+      $content .= $jft_language_footer;
+      $content .= '</div>';
+  }  elseif ($jft_language == 'swedish') {
+      date_default_timezone_set('Europe/Copenhagen');
+      $content .= '<div id="jft-container" class="jft-rendered-element">';
+      $content .= '<img src="https://www.nasverige.org/dagens-text-img/'.date("md").'.jpg" class="jft-image">';
+      $content .= $jft_language_footer;
+      $content .= '</div>';
+  } else {
+      $d1 = new DOMDocument;
+      $jft = new DOMDocument;
+      libxml_use_internal_errors(true);
+      $d1->loadHTML(wp_remote_fopen($jft_language_url));
+      libxml_clear_errors();
+      libxml_use_internal_errors(false);
+      $xpath = new DOMXpath($d1);
+      $body = $xpath->query("//$jft_language_dom_element");
+      foreach ($body as $child) {
+          $jft->appendChild($jft->importNode($child, true));
+      }
+      $content .= $jft->saveHTML();
+      $content .= $jft_language_footer;
+  }
 
         $content .= "<style type='text/css'>" . get_option('custom_css_jft') . "</style>";
     return $content;

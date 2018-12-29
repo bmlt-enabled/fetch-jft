@@ -5,7 +5,7 @@ Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it o
 # SHORTCODE
 Basic: [jft]
 
-Languages: English, French, German, Italian, Portuguese, Spanish [jft language=""]
+Languages: English, French, German, Italian, Portuguese, Spanish, Swedish [jft language=""]
 
 Layout: Table, Block [jft layout=""]
 
@@ -43,6 +43,10 @@ This section describes how to install the plugin and get it working.
 
 
 # Changelog
+
+= 1.5.2 =
+
+* Added Swedish language from NA Sweden.
 
 = 1.5.1 =
 
