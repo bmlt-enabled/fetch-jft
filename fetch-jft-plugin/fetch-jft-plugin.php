@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.5.0
+Version: 1.5.1
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -42,17 +42,17 @@ function jft_func($atts = []) {
         case 'english' :
             $jft_language_url = 'https://jftna.org/jft/';
             $jft_language_dom_element = 'table';
-   $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
+            $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
             break;
         case 'spanish':
             $jft_language_url = 'https://forozonalatino.org/sxh';
             $jft_language_dom_element = '*[@id=\'sx-wrapper\']';
-   $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright 2017 NA World Services, Inc. Todos los Derechos Reservados.</p>';
+            $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright 2017 NA World Services, Inc. Todos los Derechos Reservados.</p>';
             break;
         case 'french':
             $jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
             $jft_language_dom_element = '*[@class=\'contenu-principal\']';
-   $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
+            $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
             break;
         case 'portuguese':
             $jft_language_url = 'http://www.na.org.br/meditacao';
@@ -63,10 +63,15 @@ function jft_func($atts = []) {
             $jft_language_url = 'http://www.narcotics-anonymous.de/nfh/nfh_include.php';
             $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.narcotics-anonymous.de/nur-fuer-heute-anmeldung.html" target="_blank">Anmeldung</a></div>';
             break;
+        case 'italian':
+            $jft_language_url = 'https://na-italia.org/solo-per-oggi';
+            $jft_language_dom_element = '*[@class=\'region region-content\']';
+            $jft_language_footer = ' <div class=\'footer\'>Narcotici Anonimi Italia: <a href="https://www.na.org/" target="_blank">https://na-italia.org</a></div> ';
+            break;
         default:
             $jft_language_url = 'https://jftna.org/jft/';
             $jft_language_dom_element = 'table';
-   $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
+            $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
     }
  
     $subscribe_link = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
