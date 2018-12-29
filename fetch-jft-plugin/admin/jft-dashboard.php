@@ -29,6 +29,7 @@ function fetch_jft_plugin_page() { ?>
                             <option value="french" <?php if(esc_attr(get_option('jft_language'))=='french') echo 'selected="selected"'; ?>>French</option>
                             <option value="german" <?php if(esc_attr(get_option('jft_language'))=='german') echo 'selected="selected"'; ?>>German</option>
                             <option value="italian" <?php if(esc_attr(get_option('jft_language'))=='italian') echo 'selected="selected"'; ?>>Italian</option>
+                            <option value="japanese" <?php if(esc_attr(get_option('jft_language'))=='japanese') echo 'selected="selected"'; ?>>Japanese</option>
                             <option value="portuguese" <?php if(esc_attr(get_option('jft_language'))=='portuguese') echo 'selected="selected"'; ?>>Portuguese</option>
                             <option value="russian" <?php if(esc_attr(get_option('jft_language'))=='russian') echo 'selected="selected"'; ?>>Russian</option>
                             <option value="spanish" <?php if(esc_attr(get_option('jft_language'))=='spanish') echo 'selected="selected"'; ?>>Spanish</option>

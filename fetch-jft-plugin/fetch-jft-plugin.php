@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.5.4
+Version: 1.5.5
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -72,6 +72,11 @@ function jft_func($atts = []) {
             $jft_language_url = 'http://na-russia.org/eg';
             $jft_language_dom_element = '*[@class=\'module mod-box  deepest\']';
             $jft_language_footer = ' <div class=\'footer\'>Copyright ' . date("Y") . ' - Анонимные Наркоманы. Русскоязычный Зональный Форум.</div> ';
+            break;
+        case 'japanese':
+            $jft_language_url = 'http://najapan.org/just_for_today/';
+            $jft_language_dom_element = '*[@id=\'container\']';
+            $jft_language_footer = '';
             break;
         case 'swedish':
             $jft_language_url = 'https://www.nasverige.org/dagens-text-img/';
