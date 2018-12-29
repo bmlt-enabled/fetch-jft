@@ -24,6 +24,7 @@ function fetch_jft_plugin_page() { ?>
                     <th scope="row">Language</th>
                     <td>
                         <select id="jft_language" name="jft_language">
+                            <option value="arabic" <?php if(esc_attr(get_option('jft_language'))=='arabic') echo 'selected="selected"'; ?>>Arabic</option>
                             <option value="danish" <?php if(esc_attr(get_option('jft_language'))=='danish') echo 'selected="selected"'; ?>>Danish</option>
                             <option value="english" <?php if(esc_attr(get_option('jft_language'))=='english') echo 'selected="selected"'; ?>>English</option>
                             <option value="french" <?php if(esc_attr(get_option('jft_language'))=='french') echo 'selected="selected"'; ?>>French</option>
