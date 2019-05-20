@@ -25,6 +25,7 @@ EXAMPLES
 <a href="https://hillcountryna.org/just-for-today/">https://hillcountryna.org/just-for-today/</a>
 <a href="https://www.otwna.org/just-for-today/">https://www.otwna.org/just-for-today/</a>
 <a href="http://emeraldcoastareana.org/">http://emeraldcoastareana.org/</a>
+<a href="http://suncityna.org/members/just-for-today/">http://suncityna.org/members/just-for-today/</a>
 
 As A Widget
 <a href="http://crossroadsarea.org/events-activities/">http://crossroadsarea.org/events-activities/</a>

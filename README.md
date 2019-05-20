@@ -25,6 +25,8 @@ Layout: Table, Block [jft layout=""]
 
 [http://emeraldcoastareana.org/](http://emeraldcoastareana.org/)
 
+[http://suncityna.org/members/just-for-today/](http://suncityna.org/members/just-for-today/)
+
 As A Widget
 
 [http://crossroadsarea.org/events-activities/](http://crossroadsarea.org/events-activities/)
