@@ -27,6 +27,7 @@ function fetch_jft_plugin_page() { ?>
                             <option value="arabic" <?php if(esc_attr(get_option('jft_language'))=='arabic') echo 'selected="selected"'; ?>>Arabic</option>
                             <option value="danish" <?php if(esc_attr(get_option('jft_language'))=='danish') echo 'selected="selected"'; ?>>Danish</option>
                             <option value="english" <?php if(esc_attr(get_option('jft_language'))=='english') echo 'selected="selected"'; ?>>English</option>
+                            <option value="farsi" <?php if(esc_attr(get_option('jft_language'))=='farsi') echo 'selected="selected"'; ?>>Farsi</option>
                             <option value="french" <?php if(esc_attr(get_option('jft_language'))=='french') echo 'selected="selected"'; ?>>French</option>
                             <option value="german" <?php if(esc_attr(get_option('jft_language'))=='german') echo 'selected="selected"'; ?>>German</option>
                             <option value="italian" <?php if(esc_attr(get_option('jft_language'))=='italian') echo 'selected="selected"'; ?>>Italian</option>

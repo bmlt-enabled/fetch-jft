@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.5.6
+Version: 1.5.7
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -12,6 +12,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 require_once('admin/jft-dashboard.php');
+require_once('vendor/jdatetimeplus.class.php');
 
 // create admin menu settings page
 add_action('admin_menu', 'jft_options_menu');
@@ -53,6 +54,12 @@ function jft_func($atts = []) {
             $jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
             $jft_language_dom_element = '*[@class=\'contenu-principal\']';
             $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
+            break;
+        case 'farsi':
+            $pdate = new jDateTimePlus(true, true, 'Asia/Tehran');
+            $jft_language_url = 'http://www.jft.na-iran.org/page/' . $pdate->date("m-d", false, false) . '.html';
+            $jft_language_dom_element = '*[@id=\'table1\']';
+            $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="http://nairan1.org/" target="_blank">انجمن معتادان گمنام ایران <br>شماره ثبت : 21065</a></p> ';
             break;
         case 'portuguese':
             $jft_language_url = 'http://www.na.org.br/meditacao';
@@ -158,13 +165,13 @@ function jft_func($atts = []) {
         $content .= '<img src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
-  }  elseif ($jft_language == 'swedish') {
+  } elseif ($jft_language == 'swedish') {
         date_default_timezone_set('Europe/Stockholm');
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="https://www.nasverige.org/dagens-text-img/'.date("md").'.jpg" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
-  }  elseif ($jft_language == 'danish') {
+  } elseif ($jft_language == 'danish') {
         date_default_timezone_set('Europe/Copenhagen');
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="https://nadanmark.dk/jft_images/'.date("md").'.jpg" class="jft-image">';

@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 5.0.2
-Stable tag: 1.5.6
+Tested up to: 5.2
+Stable tag: 1.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,10 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.5.7 =
+
+* Added Farsi language from NA Iran.
 
 = 1.5.6 =
 
