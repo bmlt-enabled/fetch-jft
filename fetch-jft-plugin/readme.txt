@@ -13,7 +13,7 @@ Fetch JFT is a plugin that pulls the Just For Today from jftna.org and puts it o
 
 SHORTCODE
 Basic: [jft]
-Languages: Danish, English, French, German, Italian, Japanese, Portuguese, Russian, Spanish, Swedish [jft language=""]
+Languages: Danish, English, Farsi, French, German, Italian, Japanese, Portuguese, Russian, Spanish, Swedish [jft language=""]
 Layout: Table, Block [jft layout=""]
 -- Shortcode parameters can be combined and accept either uppercase or lowercase
 
