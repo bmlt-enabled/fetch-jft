@@ -1,0 +1,39 @@
+language: php
+
+php:
+  - '7.1'
+env:
+  global:
+    - ZIP_FILENAME=fetch-jft-plugin-build${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT}.zip
+jobs:
+  include:
+
+    - stage: zip file
+      env:
+        - BUILD_DIR=build
+        - DIST_DIR_GITHUB=dist/github
+        - GITHUB_RELEASE_FILENAME=fetch-jft.zip
+        - PLUGIN="fetch-jft"
+        - MAINFILE="fetch-jft-plugin.php"
+      script:
+        - find ./ -type d | xargs chmod 755
+        - find ./ -name '*.php' | xargs chmod 644
+        - zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+      before_deploy:
+        - mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+        - curl -LO https://raw.githubusercontent.com/pjaudiomv/bmlt-wordpress-deploy/master/deploy-wordpress.sh
+        - chmod +x deploy-wordpress.sh
+      deploy:
+        - provider: releases
+          api_key:
+            secure: HKNV5Lur1h9NYNiIO5DDXk9fssm2B2xI+wzlfU3y0U7xNWPsTiw9kLzGAt0A/kK87cuQyMKbxURebxQzu0jp6VXnLmrRipLTZloEvIuY9RM94DBEnyQLXb8HgshQRAC8hRu755QYnIRYN8bGpNmFjp2ltZO5aVgmnbsveNiW/cYJXuHKxrx0bVIWq2Y5hKlZNp2VXxZGqejzxM8RqdITrAgA7q8B8x5/8iTo/Z1su6mj7dGyFN4YGH2cm9xhTJqOxbtfLT1dyTg76h0VCFo0OUruASWK9Nz0YgIJcFBcV+uUU8tvhLjoKjXivehOJbzpWEh+B3WpWd+2PdP644IximoEa90O9Zd3R4u2jvYvgpK7OyCdjw2Pr7KBTthSNI+XYHXMsQA6p0+v/KETyMxlKmb0YYnRekEMiXzPDGhN6T6Oae30LIMSS3BuRFkXp0Qv4ZDw8sOB3lpxY1cFIRpQ9x+t1QWm9vjGWbik7r6Wdzuzbd8GT3VvzEGvCJuXATtKIW7RH361UL2SAZGvbkE5CHKdrozO9424h1URdIXykKzQoj6AKrgs3WBhq8aF3yhyRdd3Tf4cvRT9PcYAvT3dTHyEsLzA2TZZ4hxi3rI/svtdTuxEoTarYI5RseCiQ4uFH4Jqx/QPaVRBwnbt4Pk/12AclKZYRP2l/Q4aUz8ejzc=
+          file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
+          skip_cleanup: true
+          name: "$TRAVIS_TAG"
+          on:
+            tags: true
+        - provider: script
+          script: ./deploy-wordpress.sh
+          skip_cleanup: true
+          on:
+            tags: true
