@@ -37,7 +37,7 @@ function fetch_jft_plugin_page() { ?>
                             <option value="spanish" <?php if(esc_attr(get_option('jft_language'))=='spanish') echo 'selected="selected"'; ?>>Spanish</option>
                             <option value="swedish" <?php if(esc_attr(get_option('jft_language'))=='swedish') echo 'selected="selected"'; ?>>Swedish</option>
                         </select>
-                        <p class="description">Choose the language for the JFT Display.<br> <strong>Languages other then English only works with raw HTML layout.</strong></p>
+                        <p class="description">Choose the language for the JFT Display.<br> insert [jft] shortcode on your page or post. <strong>Languages other then English only works with raw HTML layout.</strong></p>
                     </td>
                 </tr>
                 <tr valign="top">
