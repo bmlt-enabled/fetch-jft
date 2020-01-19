@@ -12,7 +12,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 require_once('admin/jft-dashboard.php');
-require_once('vendor/jdatetimeplus.class.php');
+require_once('includes/jdatetimeplus.class.php');
 
 // create admin menu settings page
 add_action('admin_menu', 'jft_options_menu');
