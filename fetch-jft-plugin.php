@@ -16,20 +16,23 @@ require_once('vendor/jdatetimeplus.class.php');
 
 // create admin menu settings page
 add_action('admin_menu', 'jft_options_menu');
-function jft_options_menu() {
- add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
+function jft_options_menu()
+{
+    add_options_page('Fetch JFT Plugin Settings', 'Fetch JFT', 'manage_options', 'jft-plugin', 'fetch_jft_plugin_page');
 }
 
 // add settings link to plugins page
-function plugin_add_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=jft-plugin">' . __( 'Settings' ) . '</a>';
-    array_unshift( $links, $settings_link );
+function plugin_add_settings_link($links)
+{
+    $settings_link = '<a href="options-general.php?page=jft-plugin">' . __('Settings') . '</a>';
+    array_unshift($links, $settings_link);
     return $links;
 }
-$plugin = plugin_basename( __FILE__ );
-add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
+$plugin = plugin_basename(__FILE__);
+add_filter("plugin_action_links_$plugin", 'plugin_add_settings_link');
 
-function jft_func($atts = []) {
+function jft_func($atts = [])
+{
     extract(shortcode_atts(array(
         'language'  =>  '',
         'layout'    =>  ''
@@ -40,7 +43,7 @@ function jft_func($atts = []) {
     $jft_layout = (!empty($layout) ? sanitize_text_field(strtolower($layout)) : get_option('jft_layout'));
 
     switch ($jft_language) {
-        case 'english' :
+        case 'english':
             $jft_language_url = 'https://jftna.org/jft/';
             $jft_language_dom_element = 'table';
             $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
@@ -107,11 +110,11 @@ function jft_func($atts = []) {
     $subscribe_link = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
  
     // Get the contents of JFT
-  if($jft_layout == 'block' && $jft_language == 'english') {
-   libxml_use_internal_errors(true);
-    $url = wp_remote_fopen($jft_language_url);
-   libxml_clear_errors();
-   libxml_use_internal_errors(false);
+    if ($jft_layout == 'block' && $jft_language == 'english') {
+        libxml_use_internal_errors(true);
+        $url = wp_remote_fopen($jft_language_url);
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
         $d = new DOMDocument();
         $d->validateOnParse = true;
          $d->loadHTML($url);
@@ -123,100 +126,105 @@ function jft_func($atts = []) {
          $content = '';
             $content = '<div id="jft-container" class="'.$jft_class.'">';
 
-            foreach($d->getElementsByTagName('tr') as $element) {
-                if($i != 5) {
-                    $formated_element = trim($element->nodeValue);
-                    $content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">'.$formated_element.'</div>';
-                } else {
-                    $dom = new DOMDocument();
-                    $dom->loadHTML(wp_remote_fopen($jft_language_url));
-                    $values = array();
-                    $xpath = new DOMXPath($dom);
-                    foreach($xpath->query('//tr') as $row) {
-                        $row_values = array();
-                        foreach($xpath->query('td', $row) as $cell) {
-                            $innerHTML= '';
-                            $children = $cell->childNodes;
-                            foreach ($children as $child) {
-                                $innerHTML .= $child->ownerDocument->saveXML( $child );
-                            }
-                            $row_values[] = $innerHTML;
+        foreach ($d->getElementsByTagName('tr') as $element) {
+            if ($i != 5) {
+                $formated_element = trim($element->nodeValue);
+                $content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">'.$formated_element.'</div>';
+            } else {
+                $dom = new DOMDocument();
+                $dom->loadHTML(wp_remote_fopen($jft_language_url));
+                $values = array();
+                $xpath = new DOMXPath($dom);
+                foreach ($xpath->query('//tr') as $row) {
+                    $row_values = array();
+                    foreach ($xpath->query('td', $row) as $cell) {
+                        $innerHTML= '';
+                        $children = $cell->childNodes;
+                        foreach ($children as $child) {
+                            $innerHTML .= $child->ownerDocument->saveXML($child);
                         }
-                        $values[] = $row_values;
+                        $row_values[] = $innerHTML;
                     }
-                    $break_array = preg_split('/<br[^>]*>/i', (join('', $values[5])));
-                    $content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">';
-                    foreach($break_array as $p) {
-                        if(!empty($p)){
-                            $formated_element = '<p id="'.$jft_ids[$i].'-'.$k.'" class="'.$jft_class.'">'.trim($p).'</p>';
-                            $content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element);
-                            $k++;
-                        }
-                    }
-                    $content .= '</div>';
+                    $values[] = $row_values;
                 }
-                $i++;
+                $break_array = preg_split('/<br[^>]*>/i', (join('', $values[5])));
+                $content .= '<div id="'.$jft_ids[$i].'" class="'.$jft_class.'">';
+                foreach ($break_array as $p) {
+                    if (!empty($p)) {
+                        $formated_element = '<p id="'.$jft_ids[$i].'-'.$k.'" class="'.$jft_class.'">'.trim($p).'</p>';
+                        $content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element);
+                        $k++;
+                    }
+                }
+                $content .= '</div>';
             }
-   $content .= $subscribe_link;
+            $i++;
+        }
+        $content .= $subscribe_link;
             $content .= '</div>';
-  } elseif ($jft_language == 'german') {
-      date_default_timezone_set('Europe/Berlin');
+    } elseif ($jft_language == 'german') {
+        date_default_timezone_set('Europe/Berlin');
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
-  } elseif ($jft_language == 'swedish') {
+    } elseif ($jft_language == 'swedish') {
         date_default_timezone_set('Europe/Stockholm');
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="https://www.nasverige.org/dagens-text-img/'.date("md").'.jpg" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
-  } elseif ($jft_language == 'danish') {
+    } elseif ($jft_language == 'danish') {
         date_default_timezone_set('Europe/Copenhagen');
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="http://nadanmark.dk/jft_images/'.date("md").'.jpg" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
-  } else {
-      $d1 = new DOMDocument;
-      $jft = new DOMDocument;
-      libxml_use_internal_errors(true);
-      $d1->loadHTML(mb_convert_encoding(wp_remote_fopen($jft_language_url), 'HTML-ENTITIES', 'UTF-8'));
-      libxml_clear_errors();
-      libxml_use_internal_errors(false);
-      $xpath = new DOMXpath($d1);
-      $body = $xpath->query("//$jft_language_dom_element");
-      foreach ($body as $child) {
-          $jft->appendChild($jft->importNode($child, true));
-      }
-      $content .= $jft->saveHTML();
-      $content .= $jft_language_footer;
-  }
+    } else {
+        $d1 = new DOMDocument;
+        $jft = new DOMDocument;
+        libxml_use_internal_errors(true);
+        $d1->loadHTML(mb_convert_encoding(wp_remote_fopen($jft_language_url), 'HTML-ENTITIES', 'UTF-8'));
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
+        $xpath = new DOMXpath($d1);
+        $body = $xpath->query("//$jft_language_dom_element");
+        foreach ($body as $child) {
+            $jft->appendChild($jft->importNode($child, true));
+        }
+        $content .= $jft->saveHTML();
+        $content .= $jft_language_footer;
+    }
 
         $content .= "<style type='text/css'>" . get_option('custom_css_jft') . "</style>";
     return $content;
 }
 
 // create [jft] shortcode
-add_shortcode( 'jft', 'jft_func' );
+add_shortcode('jft', 'jft_func');
 
 /** START Fetch JFT Widget **/
 // register JFT_Widget
-add_action( 'widgets_init', function(){
-    register_widget( 'JFT_Widget' );
+add_action('widgets_init', function () {
+    register_widget('JFT_Widget');
 });
-
-class JFT_Widget extends WP_Widget {
+// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+class JFT_Widget extends WP_Widget
+{
+// phpcs:enable PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:enable Squiz.Classes.ValidClassName.NotCamelCaps
     /**
      * Sets up a new Fetch JFT widget instance.
      *
      */
-    public function __construct() {
+    public function __construct()
+    {
         $widget_ops = array(
             'classname' => 'JFT_widget',
             'description' => 'Displays the Just For Today',
         );
-    parent::__construct( 'JFT_widget', 'Fetch JFT', $widget_ops );
+        parent::__construct('JFT_widget', 'Fetch JFT', $widget_ops);
     }
 
     /**
@@ -230,32 +238,34 @@ class JFT_Widget extends WP_Widget {
     * @param array $instance Settings for the current Area Meetings Dropdown widget instance.
     */
 
-    public function widget( $args, $instance ) {
+    public function widget($args, $instance)
+    {
         echo $args['before_widget'];
-        if ( ! empty( $instance['title'] ) ) {
-            echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+        if (! empty($instance['title'])) {
+            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
         }
-        echo jft_func( $atts );
+        echo jft_func($atts);
         echo $args['after_widget'];
     }
     /**
     * Outputs the settings form for the Fetch JFT widget.
     *
     */
-    public function form( $instance ) {
-        $title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Title', 'text_domain' );
+    public function form($instance)
+    {
+        $title = ! empty($instance['title']) ? $instance['title'] : esc_html__('Title', 'text_domain');
         ?>
         <p>
-        <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
-        <?php esc_attr_e( 'Title:', 'text_domain' ); ?>
+        <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
+        <?php esc_attr_e('Title:', 'text_domain'); ?>
         </label>
 
         <input
             class="widefat"
-            id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-            name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
+            id="<?php echo esc_attr($this->get_field_id('title')); ?>"
+            name="<?php echo esc_attr($this->get_field_name('title')); ?>"
             type="text"
-            value="<?php echo esc_attr( $title ); ?>">
+            value="<?php echo esc_attr($title); ?>">
         </p>
         <?php
     }
@@ -268,9 +278,10 @@ class JFT_Widget extends WP_Widget {
     * @param array $old_instance Old settings for this instance.
     * @return array Updated settings to save.
     */
-    public function update( $new_instance, $old_instance ) {
+    public function update($new_instance, $old_instance)
+    {
         $instance = array();
-        $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+        $instance['title'] = ( ! empty($new_instance['title']) ) ? strip_tags($new_instance['title']) : '';
         return $instance;
     }
 }

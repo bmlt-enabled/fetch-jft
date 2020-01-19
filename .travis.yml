@@ -1,32 +1,38 @@
 language: php
 
 php:
-  - '7.1'
+- '7.1'
 env:
   global:
-    - ZIP_FILENAME=fetch-jft-plugin-build${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT}.zip
-    - S3_BUCKET=archives.bmlt.app
-    - S3_KEY=fetch-jft
+  - ZIP_FILENAME=fetch-jft-plugin-build${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT}.zip
+  - S3_BUCKET=archives.bmlt.app
+  - S3_KEY=fetch-jft
 jobs:
   include:
 
-    - stage: zip file
-      env:
-      - BUILD_DIR=build
-      - DIST_DIR_S3=dist/s3
-      - DIST_DIR_GITHUB=dist/github
-      - GITHUB_RELEASE_FILENAME=fetch-jft-plugin.zip
-      - PLUGIN="fetch-jft"
-      - MAINFILE="fetch-jft-plugin.php"
-      script:
-      - find ./ -type d | xargs chmod 755
-      - find ./ -name '*.php' | xargs chmod 644
-      - zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*docs*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
-      before_deploy:
-      - mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
-      - mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
-      - curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
-      - chmod +x deploy-wordpress.sh
+  - stage: lint
+    install:
+    - composer install
+    script:
+    - find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
+    - vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=vendor --extensions=php --report=summary ./
+  - stage: zip file
+    env:
+    - BUILD_DIR=build
+    - DIST_DIR_S3=dist/s3
+    - DIST_DIR_GITHUB=dist/github
+    - GITHUB_RELEASE_FILENAME=fetch-jft-plugin.zip
+    - PLUGIN="fetch-jft"
+    - MAINFILE="fetch-jft-plugin.php"
+    script:
+    - find ./ -type d | xargs chmod 755
+    - find ./ -name '*.php' | xargs chmod 644
+    - zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "composer.*" -x "*docs*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+    before_deploy:
+    - mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
+    - mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+    - curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
+    - chmod +x deploy-wordpress.sh
     deploy:
     - provider: s3
       access_key_id: AKIAI7JHYFA6DI3WYP5A
