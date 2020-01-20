@@ -41,7 +41,11 @@
  * @see        DateTime
  * @version    1.0.0
  */
+// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 class jDateTimePlus
+// phpcs:enable PSR1.Classes.ClassDeclaration.MissingNamespace
+// phpcs:enable Squiz.Classes.ValidClassName.NotCamelCaps
 {
     /**
      * Defaults
@@ -66,9 +70,15 @@ class jDateTimePlus
      */
     public function __construct($convert = null, $jalali = null, $timezone = null)
     {
-        if ( $jalali   !== null ) self::$jalali   = (bool) $jalali;
-        if ( $convert  !== null ) self::$convert  = (bool) $convert;
-        if ( $timezone !== null ) self::$timezone = $timezone;
+        if ($jalali   !== null) {
+            self::$jalali   = (bool) $jalali;
+        }
+        if ($convert  !== null) {
+            self::$convert  = (bool) $convert;
+        }
+        if ($timezone !== null) {
+            self::$timezone = $timezone;
+        }
     }
     /**
      * Convert a formatted string from Georgian Calendar to Jalali Calendar.
@@ -88,9 +98,13 @@ class jDateTimePlus
      * @param bool $convertNumbers Whether convert numbers to Persian or not
      * @return string
      */
-    public static function convertFormatToFormat($jalaliFormat, $georgianFormat, $timeString, $timezone = null,
-                                                 $convertNumbers = false)
-    {
+    public static function convertFormatToFormat(
+        $jalaliFormat,
+        $georgianFormat,
+        $timeString,
+        $timezone = null,
+        $convertNumbers = false
+    ) {
         // Normalize $timezone, take from static::date(...)
         $timezone = ($timezone != null) ? $timezone : ((self::$timezone != null) ? self::$timezone : date_default_timezone_get());
         if (is_string($timezone)) {
@@ -102,6 +116,7 @@ class jDateTimePlus
         $datetime = \DateTime::createFromFormat($georgianFormat, $timeString, $timezone);
         return static::date($jalaliFormat, $datetime->getTimestamp(), $convertNumbers);
     }
+
     /**
      * jDateTimePlus::Date
      *
@@ -111,13 +126,14 @@ class jDateTimePlus
      * $obj->date("Y-m-d H:i", time());
      * $obj->date("Y-m-d", time(), false, false, 'America/New_York');
      *
-     * @author Sallar Kaboli
      * @param $format string Acceps format string based on: php.net/date
      * @param $stamp int|bool Unix Timestamp (Epoch Time)
      * @param $convert bool (Optional) forces convert action. pass null to use system default
      * @param $jalali bool (Optional) forces jalali conversion. pass null to use system default
      * @param $timezone string (Optional) forces a different timezone. pass null to use system default
      * @return string Formatted input
+     * @throws Exception
+     * @author Sallar Kaboli
      */
     public static function date($format, $stamp = false, $convert = null, $jalali = null, $timezone = null)
     {
@@ -126,11 +142,9 @@ class jDateTimePlus
         $timezone = ($timezone != null) ? $timezone : ((self::$timezone != null) ? self::$timezone : date_default_timezone_get());
         $obj      = new DateTime('@' . $stamp, new DateTimeZone($timezone));
         $obj->setTimezone(new DateTimeZone($timezone));
-        if ( (self::$jalali === false && $jalali === null) || $jalali === false ) {
+        if ((self::$jalali === false && $jalali === null) || $jalali === false) {
             return $obj->format($format);
-        }
-        else {
-
+        } else {
             //Find what to replace
             $chars  = (preg_match_all('/([a-zA-Z]{1})/', $format, $chars)) ? $chars[0] : array();
 
@@ -176,8 +190,7 @@ class jDateTimePlus
                     case 'z':
                         if ($jmonth > 6) {
                             $v = 186 + (($jmonth - 6 - 1) * 30) + $jday;
-                        }
-                        else {
+                        } else {
                             $v = (($jmonth - 1) * 31) + $jday;
                         }
                         self::$temp['z'] = $v;
@@ -200,10 +213,15 @@ class jDateTimePlus
                         $v = $jmonth;
                         break;
                     case 't':
-                        if ($jmonth>=1 && $jmonth<=6) $v=31;
-                        else if ($jmonth>=7 && $jmonth<=11) $v=30;
-                        else if($jmonth==12 && $jyear % 4 ==3) $v=30;
-                        else if ($jmonth==12 && $jyear % 4 !=3) $v=29;
+                        if ($jmonth >= 1 && $jmonth <= 6) {
+                            $v = 31;
+                        } else if ($jmonth >= 7 && $jmonth <= 11) {
+                            $v = 30;
+                        } else if ($jmonth == 12 && $jyear % 4 == 3) {
+                            $v=30;
+                        } else if ($jmonth == 12 && $jyear % 4 != 3) {
+                            $v = 29;
+                        }
                         break;
                     //Year
                     case 'L':
@@ -349,10 +367,10 @@ class jDateTimePlus
      */
     public static function mktime($hour, $minute, $second, $month, $day, $year, $jalali)
     {
-        if($hour == '' and $minute  =='' and $second == '' and $month == '' and $day == '' and $year == '') {
+        if ($hour == '' and $minute  =='' and $second == '' and $month == '' and $day == '' and $year == '') {
             return mktime();
         } else {
-            if($jalali) {
+            if ($jalali) {
                 list($m_year,$m_month,$m_day) = self::toGregorian($year, $month, $day);
             } else {
                 list($m_year,$m_month,$m_day) = [$year, $month, $day];
@@ -391,19 +409,15 @@ class jDateTimePlus
         $year  = (intval($year)  == 0) ? self::date('Y') : intval($year);
 
         //Check if its jalali date
-        if ( $jalali === true || ($jalali === null && self::$jalali === true) )
-        {
+        if ($jalali === true || ($jalali === null && self::$jalali === true)) {
             $epoch = self::mktime(0, 0, 0, $month, $day, $year, $jalali);
 
-            if( self::date('Y-n-j', $epoch,false) == "$year-$month-$day" ) {
+            if (self::date('Y-n-j', $epoch, false) == "$year-$month-$day") {
                 $ret = true;
-            }
-            else{
+            } else {
                 $ret = false;
             }
-        }
-        else //Gregorian Date
-        {
+        } else { //Gregorian Date
             $ret = checkdate($month, $day, $year);
         }
 
@@ -422,19 +436,14 @@ class jDateTimePlus
      */
     public static function getdate($timestamp = null)
     {
-        if ( $timestamp === null )
-        {
+        if ($timestamp === null) {
             $timestamp = time();
         }
 
-        if ( is_string($timestamp) )
-        {
-            if( ctype_digit($timestamp) || ( $timestamp{0} == '-' && ctype_digit(substr($timestamp, 1)) ) )
-            {
+        if (is_string($timestamp)) {
+            if (ctype_digit($timestamp) || ($timestamp{0} == '-' && ctype_digit(substr($timestamp, 1)))) {
                 $timestamp = (int)$timestamp;
-            }
-            else
-            {
+            } else {
                 $timestamp = strtotime($timestamp);
             }
         }
@@ -510,12 +519,9 @@ class jDateTimePlus
     {
         $farsi_array   = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $english_array = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        if($toLang == 'fa')
-        {
+        if ($toLang == 'fa') {
             return str_replace($english_array, $farsi_array, $matches);
-        }
-        else
-        {
+        } else {
             return str_replace($farsi_array, $english_array, $matches);
         }
     }
@@ -531,10 +537,9 @@ class jDateTimePlus
      */
     private static function substr($str, $start, $len)
     {
-        if ( function_exists('mb_substr') ) {
+        if (function_exists('mb_substr')) {
             return mb_substr($str, $start, $len, 'UTF-8');
-        }
-        else {
+        } else {
             return substr($str, $start, $len * 2);
         }
     }
@@ -560,8 +565,7 @@ class jDateTimePlus
         $days %= 1461;
         $jy += self::div($days - 1, 365);
 
-        if ($days > 365)
-        {
+        if ($days > 365) {
             $days = ($days-1) % 365;
         }
 
@@ -587,11 +591,10 @@ class jDateTimePlus
         $gy += 400 * self::div($days, 146097);
         $days %= 146097;
 
-        if($days > 36524) {
+        if ($days > 36524) {
             $gy += 100 * self::div(--$days, 36524);
             $days %= 36524;
-            if($days >= 365)
-            {
+            if ($days >= 365) {
                 $days++;
             }
         }
@@ -600,17 +603,14 @@ class jDateTimePlus
         $days %= 1461;
         $gy += self::div($days - 1, 365);
 
-        if($days > 365)
-        {
+        if ($days > 365) {
             $days = ($days-1) % 365;
         }
 
         $gd=$days+1;
 
-        foreach (array(0,31,(($gy%4==0 and $gy%100!=0) or ($gy % 400 == 0)) ? 29:28,31,30,31,30,31,31,30,31,30,31) as $gm=>$v)
-        {
-            if($gd <= $v)
-            {
+        foreach (array(0,31,(($gy%4==0 and $gy%100!=0) or ($gy % 400 == 0)) ? 29:28,31,30,31,30,31,31,30,31,30,31) as $gm => $v) {
+            if ($gd <= $v) {
                 break;
             }
             $gd -= $v;
@@ -638,8 +638,7 @@ class jDateTimePlus
      * @param string $outputFormat
      * @return string
      */
-    public static function getUTCToLocalDateTime($utcDateTime, $timezone, $inputFormat = 'Y-m-d H:i:s', $outputFormat =
-    'Y-m-d H:i:s')
+    public static function getUTCToLocalDateTime($utcDateTime, $timezone, $inputFormat = 'Y-m-d H:i:s', $outputFormat = 'Y-m-d H:i:s')
     {
         $utc_date = DateTime::createFromFormat(
             $inputFormat,
