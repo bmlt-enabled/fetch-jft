@@ -52,11 +52,6 @@ jobs:
       name: "$TRAVIS_TAG"
       on:
         tags: true
-    - provider: script
-      script: ./deploy-wordpress.sh
-      skip_cleanup: true
-      on:
-        tags: true
         condition: $TRAVIS_TAG != *beta*
     - provider: releases
       api_key:
@@ -67,7 +62,7 @@ jobs:
       prerelease: true
       on:
         tags: true
-      condition: $TRAVIS_TAG =~ "beta"
+        condition: $TRAVIS_TAG =~ "beta"
     - provider: script
       script: ./deploy-wordpress.sh
       skip_cleanup: true
