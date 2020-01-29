@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.5.8
+Version: 1.5.9
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -33,14 +33,17 @@ add_filter("plugin_action_links_$plugin", 'plugin_add_settings_link');
 
 function jft_func($atts = [])
 {
-    extract(shortcode_atts(array(
-        'language'  =>  '',
-        'layout'    =>  ''
-    ), $atts));
+    $args = shortcode_atts(
+        array(
+            'language'  =>  '',
+            'layout'    =>  ''
+        ),
+        $atts
+    );
 
     //Set language and layout - shortcode parameter overrides admin settings
-    $jft_language = (!empty($language) ? sanitize_text_field(strtolower($language)) : get_option('jft_language'));
-    $jft_layout = (!empty($layout) ? sanitize_text_field(strtolower($layout)) : get_option('jft_layout'));
+    $jft_language = (!empty($args['language']) ? sanitize_text_field(strtolower($args['language'])) : get_option('jft_language'));
+    $jft_layout = (!empty($args['layout']) ? sanitize_text_field(strtolower($args['layout'])) : get_option('jft_layout'));
 
     switch ($jft_language) {
         case 'english':
@@ -56,13 +59,13 @@ function jft_func($atts = [])
         case 'french':
             $jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
             $jft_language_dom_element = '*[@class=\'contenu-principal\']';
-            $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
+            $jft_language_footer = ' <br><p id="jft_copyright" class="jft-rendered-element"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-'.date("Y").', NA World Services, Inc. All Rights Reserved</a></p> ';
             break;
         case 'farsi':
             $pdate = new jDateTimePlus(true, true, 'Asia/Tehran');
             $jft_language_url = 'http://www.jft.na-iran.org/page/' . $pdate->date("m-d", false, false) . '.html';
             $jft_language_dom_element = '*[@id=\'table1\']';
-            $jft_language_footer = ' <br><p id="jft_copyright" class="'.$jft_class.'"><a href="http://nairan1.org/" target="_blank">انجمن معتادان گمنام ایران <br>شماره ثبت : 21065</a></p> ';
+            $jft_language_footer = ' <br><p id="jft_copyright" class="jft-rendered-element"><a href="http://nairan1.org/" target="_blank">انجمن معتادان گمنام ایران <br>شماره ثبت : 21065</a></p> ';
             break;
         case 'portuguese':
             $jft_language_url = 'http://www.na.org.br/meditacao';
@@ -122,9 +125,8 @@ function jft_func($atts = [])
         $jft_ids = array('jft-date','jft-title','jft-page','jft-quote','jft-quote-source','jft-content','jft-thought','jft-copyright');
         $jft_class = 'jft-rendered-element';
         $i = 0;
-         $k = 1;
-         $content = '';
-            $content = '<div id="jft-container" class="'.$jft_class.'">';
+        $k = 1;
+        $content = '<div id="jft-container" class="'.$jft_class.'">';
 
         foreach ($d->getElementsByTagName('tr') as $element) {
             if ($i != 5) {
@@ -164,23 +166,27 @@ function jft_func($atts = [])
             $content .= '</div>';
     } elseif ($jft_language == 'german') {
         date_default_timezone_set('Europe/Berlin');
+        $content = '<div id="jft-container" class="'.$jft_class.'">';
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="http://www.narcotics-anonymous.de/nfh/files/'.date("md").'.gif" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
     } elseif ($jft_language == 'swedish') {
         date_default_timezone_set('Europe/Stockholm');
+        $content = '<div id="jft-container" class="'.$jft_class.'">';
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="https://www.nasverige.org/dagens-text-img/'.date("md").'.jpg" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
     } elseif ($jft_language == 'danish') {
         date_default_timezone_set('Europe/Copenhagen');
+        $content = '<div id="jft-container" class="'.$jft_class.'">';
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="http://nadanmark.dk/jft_images/'.date("md").'.jpg" class="jft-image">';
         $content .= $jft_language_footer;
         $content .= '</div>';
     } else {
+        $content = '';
         $d1 = new DOMDocument;
         $jft = new DOMDocument;
         libxml_use_internal_errors(true);
@@ -195,7 +201,6 @@ function jft_func($atts = [])
         $content .= $jft->saveHTML();
         $content .= $jft_language_footer;
     }
-
         $content .= "<style type='text/css'>" . get_option('custom_css_jft') . "</style>";
     return $content;
 }
@@ -247,10 +252,11 @@ class JFT_Widget extends WP_Widget
         echo jft_func($atts);
         echo $args['after_widget'];
     }
+
     /**
-    * Outputs the settings form for the Fetch JFT widget.
-    *
-    */
+     * Outputs the settings form for the Fetch JFT widget.
+     * @param $instance
+     */
     public function form($instance)
     {
         $title = ! empty($instance['title']) ? $instance['title'] : esc_html__('Title', 'text_domain');

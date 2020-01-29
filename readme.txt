@@ -3,7 +3,7 @@
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
 Tested up to: 5.3.2
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,11 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.5.9 =
+
+* Fix to better comply with WordPress best practices.
+* Fix for missing CSS attributes.
 
 = 1.5.8 =
 
