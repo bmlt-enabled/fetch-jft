@@ -33,6 +33,9 @@ jobs:
     - mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
     - curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
     - chmod +x deploy-wordpress.sh
+    - curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/release-notes.sh
+    - chmod +x release-notes.sh
+    - ./release-notes.sh readme.txt "wp"
     deploy:
     - provider: s3
       access_key_id: AKIAI7JHYFA6DI3WYP5A
@@ -45,10 +48,11 @@ jobs:
       on:
         all_branches: true
     - provider: releases
-      api_key:
+      edge: true
+      release_notes_file: "changelog.txt"
+      token:
         secure: A/Urk3W3i+Oi7OEOPZ54mpIoMZpdoegm6FXTMVQ3Yh1pD4nkExUwMWSwZ+L6TrwWFb6E/lSGNQIMD153xbWFUjn5Gfa6WiQyihy6KeHqpKFWB9Sd6pohNsRJL1vEjiu1ASQ6jWsBCj31bVFLMZv4GGpdsKjS+gu9p9IgtLP63z6Yr3G5c1ZWbVk4FlN+0sCaZUC0LHZADaW4GM7Yo8orAm8DTmwR5eUnyQNHqP6bpHrYVTADUggo3GNd36r+cvPQJr4n8p6P/BY7L8YO8sQFBOH5RKBAle8bwzbIavjh/zNWUFfCUXLUb1oswSuPyRNP1Nx+tqteUSOpgfgkPZugeq5O+mCdccvuYv6rRYXNYMnE1PqyQAO5iAHKgxcYf7X/jBprjjUboOhOOH0oui3xAXVIV0U99+Yvzqma0s5ZayGTCJhf9dXJ/u2oOnvp6y7mENUpwDW7WczuS7TcWb56zfHDRTwcvaVNffhSVz7hwPRnbkZVNZrZcQlBTX6TArKGB1dBaA2Z46HB8mgoGYBg6DcOfTaha7/AtCb4igo3Y0yC/QA3AbZ24CJ+HfiBsp8Wc1slTaiFNy2DSWfjcgb35kH2WP5IhMYrk787ZVAXwgbP5DLgSYKoEKUjmmUlq5KdSUzjd5qJ3irfvHr7Qt3l/SzlVqSFbko3emypKnZhSy8=
       file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
-      skip_cleanup: true
       name: "$TRAVIS_TAG"
       on:
         tags: true
@@ -63,11 +67,11 @@ jobs:
       on:
         tags: true
         condition: $TRAVIS_TAG =~ "beta"
-    - provider: script
-      script: ./deploy-wordpress.sh
-      skip_cleanup: true
-      on:
-        tags: true
+#    - provider: script
+#      script: ./deploy-wordpress.sh
+#      skip_cleanup: true
+#      on:
+#        tags: true
 notifications:
   slack:
     rooms:
