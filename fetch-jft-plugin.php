@@ -111,7 +111,8 @@ function jft_func($atts = [])
     }
  
     $subscribe_link = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
- 
+    $jft_class = 'jft-rendered-element';
+
     // Get the contents of JFT
     if ($jft_layout == 'block' && $jft_language == 'english') {
         libxml_use_internal_errors(true);
