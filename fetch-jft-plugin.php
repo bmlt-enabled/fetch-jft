@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.6.0
+Version: 1.6.1
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -77,9 +77,9 @@ function jft_func($atts = [])
             $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.narcotics-anonymous.de/nur-fuer-heute-anmeldung.html" target="_blank">Anmeldung</a></div>';
             break;
         case 'italian':
-            $jft_language_url = 'https://na-italia.org/solo-per-oggi';
+            $jft_language_url = 'https://na-italia.org/get-jft';
             $jft_language_dom_element = '*[@class=\'region region-content\']';
-            $jft_language_footer = ' <div class=\'footer\'>Narcotici Anonimi Italia: <a href="https://www.na.org/" target="_blank">https://na-italia.org</a></div> ';
+            $jft_language_footer = ' <div class=\'footer\'>Narcotici Anonimi Italia: <a href="https://na-italia.org/" target="_blank">https://na-italia.org</a></div> ';
             break;
         case 'russian':
             $jft_language_url = 'http://na-russia.org/eg';
@@ -184,6 +184,19 @@ function jft_func($atts = [])
         $content = '<div id="jft-container" class="'.$jft_class.'">';
         $content .= '<div id="jft-container" class="jft-rendered-element">';
         $content .= '<img src="http://nadanmark.dk/jft_images/'.date("md").'.jpg" class="jft-image">';
+        $content .= $jft_language_footer;
+        $content .= '</div>';
+    } elseif ($jft_language == 'italian') {
+        date_default_timezone_set('Europe/Rome');
+        $italian_jft = json_decode(wp_remote_fopen($jft_language_url), true);
+        $ret = '';
+        foreach ($italian_jft as $content) {
+            $ret .= $content['title'];
+            $ret .= $content['content'];
+            $ret .= $content['excerpt'];
+        }
+        $content = '<div id="jft-container" class="jft-rendered-element">';
+        $content .= mb_convert_encoding($ret, 'HTML-ENTITIES', 'UTF-8');
         $content .= $jft_language_footer;
         $content .= '</div>';
     } else {
