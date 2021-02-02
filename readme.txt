@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 5.5.1
-Stable tag: 1.6.1
+Tested up to: 5.6
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,10 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.6.2 =
+
+* Fix for improperly UTF8 encoding for english JFT.
 
 = 1.6.1 =
 
