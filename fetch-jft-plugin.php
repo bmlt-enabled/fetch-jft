@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.6.2
+Version: 1.6.3
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -200,17 +200,25 @@ function jft_func($atts = [])
         $content .= $jft_language_footer;
         $content .= '</div>';
     } else {
-        # Do this until I can find a better way to detect char encoding or strip it from headers.
-        if ($jft_language == 'portuguese') {
-            $char_encoding = "ISO-8859-1";
+        $jft_get = wp_remote_get($jft_language_url);
+        $jft_content_header = wp_remote_retrieve_header($jft_get, 'content-type');
+        $jft_body = wp_remote_retrieve_body($jft_get);
+
+        if (preg_match('/\s*charset=(.*)?/im', $jft_content_header, $matches)) {
+            if (isset($matches[1])) {
+                $char_encoding = strtoupper(trim($matches[1]));
+            } else {
+                $char_encoding = "UTF-8";
+            }
         } else {
             $char_encoding = "UTF-8";
         }
+
         $content = '';
         $d1 = new DOMDocument;
         $jft = new DOMDocument;
         libxml_use_internal_errors(true);
-        $d1->loadHTML(mb_convert_encoding(wp_remote_fopen($jft_language_url), 'HTML-ENTITIES', $char_encoding));
+        $d1->loadHTML(mb_convert_encoding($jft_body, 'HTML-ENTITIES', $char_encoding));
         libxml_clear_errors();
         libxml_use_internal_errors(false);
         $xpath = new DOMXpath($d1);

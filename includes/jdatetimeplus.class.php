@@ -215,11 +215,11 @@ class jDateTimePlus
                     case 't':
                         if ($jmonth >= 1 && $jmonth <= 6) {
                             $v = 31;
-                        } else if ($jmonth >= 7 && $jmonth <= 11) {
+                        } elseif ($jmonth >= 7 && $jmonth <= 11) {
                             $v = 30;
-                        } else if ($jmonth == 12 && $jyear % 4 == 3) {
+                        } elseif ($jmonth == 12 && $jyear % 4 == 3) {
                             $v=30;
-                        } else if ($jmonth == 12 && $jyear % 4 != 3) {
+                        } elseif ($jmonth == 12 && $jyear % 4 != 3) {
                             $v = 29;
                         }
                         break;
