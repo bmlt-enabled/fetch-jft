@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.6.2
+Version: 1.6.3
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -52,9 +52,8 @@ function jft_func($atts = [])
             $jft_language_footer = '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>';
             break;
         case 'spanish':
-            $jft_language_url = 'https://forozonalatino.org/sxh';
-            $jft_language_dom_element = '*[@id=\'sx-wrapper\']';
-            $jft_language_footer = '<p class="copyright-sxh">Servicio del Foro Zonal Latinoamericano, Copyright ' .date("Y"). ' NA World Services, Inc. Todos los Derechos Reservados.</p>';
+            $jft_language_url = 'https://forozonalatino.org/wp-content/uploads/meditaciones/';
+            $jft_language_footer = '';
             break;
         case 'french':
             $jft_language_url = 'https://jpa.narcotiquesanonymes.org/';
@@ -199,18 +198,41 @@ function jft_func($atts = [])
         $content .= mb_convert_encoding($ret, 'HTML-ENTITIES', 'UTF-8');
         $content .= $jft_language_footer;
         $content .= '</div>';
+    } elseif ($jft_language == 'spanish') {
+        date_default_timezone_set('America/Mexico_City');
+        $spanish_jft = $jft_language_url . date("m") . "/" . date("d") . ".html";
+        $content = <<<CON
+    <style type="text/css">
+        @import url("https://forozonalatino.org/wp-content/uploads/meditaciones/css/sxh.css");
+    </style>
+CON;
+        $sjft = new DOMDocument;
+        libxml_use_internal_errors(true);
+        $sjft->loadHTML(mb_convert_encoding(wp_remote_fopen($spanish_jft), 'HTML-ENTITIES', "UTF-8"));
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
+        $sbody = $sjft->saveHTML($sjft->getElementsByTagName('body')->item(0));
+        $content .= str_replace(array( '<body>', '</body>' ), '', $sbody);
     } else {
-        # Do this until I can find a better way to detect char encoding or strip it from headers.
-        if ($jft_language == 'portuguese') {
-            $char_encoding = "ISO-8859-1";
+        $jft_get = wp_remote_get($jft_language_url);
+        $jft_content_header = wp_remote_retrieve_header($jft_get, 'content-type');
+        $jft_body = wp_remote_retrieve_body($jft_get);
+
+        if (preg_match('/\s*charset=(.*)?/im', $jft_content_header, $matches)) {
+            if (isset($matches[1])) {
+                $char_encoding = strtoupper(trim($matches[1]));
+            } else {
+                $char_encoding = "UTF-8";
+            }
         } else {
             $char_encoding = "UTF-8";
         }
+
         $content = '';
         $d1 = new DOMDocument;
         $jft = new DOMDocument;
         libxml_use_internal_errors(true);
-        $d1->loadHTML(mb_convert_encoding(wp_remote_fopen($jft_language_url), 'HTML-ENTITIES', $char_encoding));
+        $d1->loadHTML(mb_convert_encoding($jft_body, 'HTML-ENTITIES', $char_encoding));
         libxml_clear_errors();
         libxml_use_internal_errors(false);
         $xpath = new DOMXpath($d1);
