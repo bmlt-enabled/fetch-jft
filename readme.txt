@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 5.7.2
-Stable tag: 1.6.5
+Tested up to: 5.8.2
+Stable tag: 1.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,10 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.6.6 =
+
+* Fix PHP Deprecation notice for Jalali date conversion.
 
 = 1.6.5 =
 
