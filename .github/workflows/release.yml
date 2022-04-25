@@ -1,0 +1,87 @@
+name: 'release'
+
+on:
+  push:
+    tags: [ '*' ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_DIR: build
+      DIST_DIR_GITHUB: dist/github
+      GITHUB_RELEASE_FILENAME: fetch-jft.zip
+      PLUGIN: "fetch-jft"
+      MAINFILE: "fetch-jft.php"
+    steps:
+      - uses: actions/checkout@v2
+        id: code-checkout
+
+      - name: Prepare to deploy
+        run: |
+          export ARTIFACT_FILE=fetch-jft-${GITHUB_REF##*/}
+          export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
+          git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
+          unzip ${ARTIFACT_FILENAME}
+          rm ${ARTIFACT_FILENAME}
+          echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
+          find ./${ARTIFACT_FILE} -type d | xargs chmod 755
+          find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
+          zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
+          curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/release-notes.sh
+          chmod +x release-notes.sh
+          ./release-notes.sh readme.txt "wp"
+      - name: Prepare artifact metadata
+        id: prepare_artifact_metadata
+        run: |
+          echo ::set-output name=ARTIFACT_PATH::./fetch-jft-${GITHUB_REF##*/}.zip
+          echo ::set-output name=ARTIFACT_NAME::fetch-jft-${GITHUB_REF##*/}.zip
+      - name: Release beta
+        if: contains(github.ref, 'beta')
+        id: beta_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body_path: "changelog.txt"
+          prerelease: true
+          draft: false
+
+      - name: Upload Beta Asset
+        if: contains(github.ref, 'beta')
+        id: beta-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.beta_release.outputs.upload_url }}
+          asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
+          asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
+          asset_content_type: application/zip
+
+      - name: Release stable
+        if: "!contains(github.ref, 'beta')"
+        id: stable_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body_path: "changelog.txt"
+          prerelease: false
+          draft: false
+
+      - name: Upload Stable Asset
+        if: "!contains(github.ref, 'beta')"
+        id: stable-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.stable_release.outputs.upload_url }}
+          asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
+          asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
+          asset_content_type: application/zip
