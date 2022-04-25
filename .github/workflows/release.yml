@@ -28,6 +28,8 @@ jobs:
           find ./${ARTIFACT_FILE} -type d | xargs chmod 755
           find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
           zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
+          mkdir -p $DIST_DIR_GITHUB && cp $ARTIFACT_FILE $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+          ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/release-notes.sh
           chmod +x release-notes.sh
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
