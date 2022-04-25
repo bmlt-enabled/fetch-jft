@@ -1,0 +1,86 @@
+name: 'latest'
+
+on:
+  push:
+    branches: [ 'main' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        id: install-dependencies
+        uses: php-actions/composer@v5
+        with:
+          args: --prefer-dist --no-progress --no-suggest
+
+      - name: Lint
+        run: |
+          find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
+          vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=*/vendor/* --extensions=php --report=summary ./
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#fetch-jft'
+        if: failure()
+
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      S3_BUCKET: archives.bmlt.app
+      S3_KEY: fetch-jft
+      BUILD_DIR: build
+      DIST_DIR_S3: dist/s3
+      PLUGIN: "fetch-jft"
+      MAINFILE: "fetch-jft.php"
+    steps:
+      - uses: actions/checkout@v2
+        id: code-checkout
+
+      - name: Prepare to deploy
+        run: |
+          export FILENAME=fetch-jft-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
+          export ZIP_FILENAME=$FILENAME.zip
+          find ./ -type d | xargs chmod 755
+          find ./ -name '*.php' | xargs chmod 644
+          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*vendor*" -x "composer.*" -x "*.gitattributes" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+          mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
+      - name: Upload artifact to S3
+        id: upload-artifact-to-s3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: $DIST_DIR_S3
+          DEST_DIR: $S3_KEY
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#fetch-jft'
+        if: failure()
