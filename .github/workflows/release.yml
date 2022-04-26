@@ -20,6 +20,8 @@ jobs:
       - name: Prepare to deploy
         run: |
           export ZIP_FILENAME=fetch-jft-build-${GITHUB_REF##*/}
+          export ARTIFACT_FILE=fetch-jft-build-${GITHUB_REF##*/}
+          export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
           echo ${GITHUB_SHA} > build.txt
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
