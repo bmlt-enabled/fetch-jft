@@ -10,9 +10,9 @@ jobs:
     env:
       BUILD_DIR: build
       DIST_DIR_GITHUB: dist/github
-      GITHUB_RELEASE_FILENAME: fetch-jft.zip
+      GITHUB_RELEASE_FILENAME: fetch-jft-plugin.zip
       PLUGIN: "fetch-jft"
-      MAINFILE: "fetch-jft.php"
+      MAINFILE: "fetch-jft-plugin.php"
     steps:
       - uses: actions/checkout@v2
         id: code-checkout
