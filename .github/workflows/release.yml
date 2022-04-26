@@ -28,17 +28,12 @@ jobs:
           find ./${ARTIFACT_FILE} -type d | xargs chmod 755
           find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
           zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
-          ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
+          mkdir -p $DIST_DIR_GITHUB && cp $ARTIFACT_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/release-notes.sh
           chmod +x release-notes.sh
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
           chmod +x deploy-wordpress.sh
           ./release-notes.sh readme.txt "wp"
-          mkdir -p $DIST_DIR_GITHUB && cp $ARTIFACT_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
-          echo $ARTIFACT_FILENAME
-          ls -lt
-          echo "yolo"
-          ls -lt $DIST_DIR_GITHUB
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
         run: |
