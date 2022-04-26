@@ -34,6 +34,8 @@ jobs:
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
           chmod +x deploy-wordpress.sh
           ./release-notes.sh readme.txt "wp"
+          echo $ARTIFACT_FILENAME
+          ls -lt
           mkdir -p $DIST_DIR_GITHUB && cp $ARTIFACT_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
