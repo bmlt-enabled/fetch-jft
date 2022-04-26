@@ -10,7 +10,6 @@ jobs:
     env:
       BUILD_DIR: build
       DIST_DIR_GITHUB: dist/github
-      ZIP_FILENAME: fetch-jft-build-${GITHUB_REF##*/}
       GITHUB_RELEASE_FILENAME: fetch-jft-plugin.zip
       PLUGIN: "fetch-jft"
       MAINFILE: "fetch-jft-plugin.php"
@@ -20,6 +19,7 @@ jobs:
 
       - name: Prepare to deploy
         run: |
+          export ZIP_FILENAME=fetch-jft-build-${GITHUB_REF##*/}
           echo ${GITHUB_SHA} > build.txt
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
