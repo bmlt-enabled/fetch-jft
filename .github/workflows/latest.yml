@@ -65,7 +65,7 @@ jobs:
           export ZIP_FILENAME=$FILENAME.zip
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
-          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*vendor*" -x "composer.*" -x "*.gitattributes" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*vendor*" -x "composer.*" -x docker-compose* -x "*.gitattributes" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
       - name: Upload artifact to S3
         id: upload-artifact-to-s3
