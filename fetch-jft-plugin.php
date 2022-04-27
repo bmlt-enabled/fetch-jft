@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.6.7
+Version: 1.6.8
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -62,7 +62,7 @@ function jft_func($atts = [])
             break;
         case 'farsi':
             $pdate = new jDateTimePlus(true, true, 'Asia/Tehran');
-            $jft_language_url = 'http://www.jft.na-iran.org/page/' . $pdate->date("m-d", false, false) . '.html';
+            $jft_language_url = 'https://nairan.org/jft/page/' . $pdate->date("m-d", false, false) . '.html';
             $jft_language_dom_element = '*[@id=\'table1\']';
             $jft_language_footer = ' <br><p id="jft_copyright" class="jft-rendered-element"><a href="http://nairan1.org/" target="_blank">انجمن معتادان گمنام ایران <br>شماره ثبت : 21065</a></p> ';
             break;
@@ -90,11 +90,11 @@ function jft_func($atts = [])
             $jft_language_dom_element = '*[@id=\'container\']';
             $jft_language_footer = '';
             break;
-        case 'arabic':
-            $jft_language_url = 'https://nakuwait.odoo.com/page/jft';
-            $jft_language_dom_element = '*[@class=\'mb32 col-md-12\']';
-            $jft_language_footer = ' <div class=\'footer\'>Copyright ' . date("Y") . ' - Narcotics Anonymous - Kuwait.</div> ';
-            break;
+//        case 'arabic':
+//            $jft_language_url = 'https://nakuwait.odoo.com/page/jft';
+//            $jft_language_dom_element = '*[@class=\'mb32 col-md-12\']';
+//            $jft_language_footer = ' <div class=\'footer\'>Copyright ' . date("Y") . ' - Narcotics Anonymous - Kuwait.</div> ';
+//            break;
         case 'swedish':
             $jft_language_url = 'https://www.nasverige.org/dagens-text-img/';
             $jft_language_footer = ' <div class=\'footer\'>Copyright ' . date("Y") . ' - Anonyma Narkomaner NA Sverige.</div> ';
