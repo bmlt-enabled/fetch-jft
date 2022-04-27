@@ -72,7 +72,7 @@ jobs:
           export ZIP_FILENAME=fetch-jft-plugin-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
-          echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
+          echo ${GITHUB_SHA} > build.txt
           zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*vendor*" -x "Dockerfile" -x "*assets*" -x "composer.*" -x "*docs*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
