@@ -68,7 +68,7 @@ jobs:
       - name: Build package
         id: build-package
         run: |
-          export ARTIFACT_FILE=yap-${GITHUB_REF##*/}
+          export ARTIFACT_FILE=fetch-jft-${GITHUB_REF##*/}
           export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
           git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
           unzip ${ARTIFACT_FILENAME}
@@ -86,8 +86,8 @@ jobs:
 #      - name: Prepare artifact metadata
 #        id: prepare_artifact_metadata
 #        run: |
-#          echo ::set-output name=ARTIFACT_PATH::./yap-${GITHUB_REF##*/}.zip
-#          echo ::set-output name=ARTIFACT_NAME::yap-${GITHUB_REF##*/}.zip
+#          echo ::set-output name=ARTIFACT_PATH::./fetch-jft-${GITHUB_REF##*/}.zip
+#          echo ::set-output name=ARTIFACT_NAME::fetch-jft-${GITHUB_REF##*/}.zip
 #
 #      - name: Release beta
 #        if: contains(github.ref, 'beta')
