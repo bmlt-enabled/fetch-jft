@@ -39,8 +39,9 @@ jobs:
   package:
     runs-on: ubuntu-latest
     env:
-      DIST_DIR_GITHUB: dist/github
-      GITHUB_RELEASE_FILENAME: fetch-jft-plugin.zip
+      BUILD_DIR: "build"
+      DIST_DIR_GITHUB: "dist/github"
+      GITHUB_RELEASE_FILENAME: "fetch-jft-plugin.zip"
       PLUGIN: "fetch-jft"
       MAINFILE: "fetch-jft-plugin.php"
 #    needs: [ lint ]
@@ -68,15 +69,11 @@ jobs:
       - name: Build package
         id: build-package
         run: |
-          export ARTIFACT_FILE=fetch-jft-${GITHUB_REF##*/}
-          export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
-          git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
-          unzip ${ARTIFACT_FILENAME}
-          rm ${ARTIFACT_FILENAME}
+          export ZIP_FILENAME=fetch-jft-plugin-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
+          find ./ -type d | xargs chmod 755
+          find ./ -name '*.php' | xargs chmod 644
           echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
-          find ./${ARTIFACT_FILE} -type d | xargs chmod 755
-          find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
-          zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
+          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*vendor*" -x "Dockerfile" -x "*assets*" -x "composer.*" -x "*docs*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
           ./gh-release-notes.sh readme.txt "wp"
