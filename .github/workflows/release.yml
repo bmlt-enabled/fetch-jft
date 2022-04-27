@@ -7,13 +7,16 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - uses: actions/checkout@v2
-        id: code-checkout
+      - name: Check out code
+        uses: actions/checkout@v2
 
-      - name: Validate composer.json and composer.lock
-        id: composer-validate
-        run: composer validate
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
 
       - name: Cache Composer packages
         id: composer-cache
@@ -23,18 +26,23 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
-
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         id: install-dependencies
         uses: php-actions/composer@v5
         with:
-          php_version: 7.4
           args: --prefer-dist --no-progress --no-suggest
 
-      - name: PHPCS checker
-        id: php-codesniffer
-        run: vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=vendor --extensions=php --report=summary ./
+      - name: Lint
+        run: |
+          find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
+          vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=*/vendor/* --extensions=php --report=summary ./
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#fetch-jft'
+        if: failure()
 
   package:
     runs-on: ubuntu-latest
@@ -44,7 +52,7 @@ jobs:
       GITHUB_RELEASE_FILENAME: "fetch-jft-plugin.zip"
       PLUGIN: "fetch-jft"
       MAINFILE: "fetch-jft-plugin.php"
-#    needs: [ lint ]
+    needs: [ lint ]
     steps:
       - uses: actions/checkout@v2
         id: code-checkout
