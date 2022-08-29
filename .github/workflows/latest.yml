@@ -63,21 +63,20 @@ jobs:
         run: |
           export FILENAME=fetch-jft-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ZIP_FILENAME=$FILENAME.zip
+          echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
           zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*vendor*" -x "composer.*" -x docker-compose* -x "*.gitattributes" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
-      - name: Upload artifact to S3
-        id: upload-artifact-to-s3
-        uses: jakejarvis/s3-sync-action@master
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: --acl public-read --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SOURCE_DIR: $DIST_DIR_S3
-          DEST_DIR: $S3_KEY
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions/gh-ci-s3-artifact
+          role-session-name: gh-actions
+          aws-region: us-east-1
+      - run: |
+          aws s3 cp $DIST_DIR_S3/$ZIP_FILENAME s3://$S3_BUCKET/$S3_KEY/$ZIP_FILENAME
 
       - uses: act10ns/slack@v1
         with:
