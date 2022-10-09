@@ -1,3 +1,6 @@
 .DS_Store
 .idea
 logs
+*.zip
+/build
+/dist

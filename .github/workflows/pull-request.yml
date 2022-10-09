@@ -26,17 +26,16 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
+
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         id: install-dependencies
-        uses: php-actions/composer@v5
-        with:
-          args: --prefer-dist --no-progress --no-suggest
+        run: make composer
 
-      - name: Lint
-        run: |
-          find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
-          vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=*/vendor/* --extensions=php --report=summary ./
+      - name: PHPCS checker
+        id: php-codesniffer
+        run: make lint
+
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
