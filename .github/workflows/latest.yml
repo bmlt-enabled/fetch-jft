@@ -26,17 +26,16 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
+
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         id: install-dependencies
-        uses: php-actions/composer@v5
-        with:
-          args: --prefer-dist --no-progress --no-suggest
+        run: make composer
 
-      - name: Lint
-        run: |
-          find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
-          vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=*/vendor/* --extensions=php --report=summary ./
+      - name: PHPCS checker
+        id: php-codesniffer
+        run: make lint
+
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
@@ -67,9 +66,8 @@ jobs:
           export FILENAME=fetch-jft-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
-          find ./ -type d | xargs chmod 755
-          find ./ -name '*.php' | xargs chmod 644
-          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "*vendor*" -x "composer.*" -x docker-compose* -x "*.gitattributes" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+          git archive --format=zip --output=${ZIP_FILENAME} ${GITHUB_SHA}
+          mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
 
       - name: configure aws credentials
@@ -82,6 +80,14 @@ jobs:
       - name: copy artifact to s3
         run: |
           aws s3 cp $DIST_DIR_S3/$ZIP_FILENAME s3://$S3_BUCKET/$S3_KEY/$ZIP_FILENAME
+
+      - name: Publish Release to Latest WP
+        id: publish_latest
+        uses: bmlt-enabled/wordpress-releases-github-action@v1
+        with:
+          file: ${{ env.DIST_DIR_S3 }}/${{ env.ZIP_FILENAME }}
+          s3_key: ${{ env.S3_KEY }}
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
       - uses: act10ns/slack@v1
         with:
