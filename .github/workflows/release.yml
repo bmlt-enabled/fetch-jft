@@ -80,8 +80,8 @@ jobs:
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
           echo ${GITHUB_SHA} > build.txt
-          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.phpcs.xml" -x "*vendor*" -x "Dockerfile" -x "docker-compose*" -x "*assets*" -x "composer.*" -x "*docs*"
-          mkdir $BUILD_DIR && cp $ZIP_FILENAME $BUILD_DIR/
+          make build
+          zip $ZIP_FILENAME build.txt
           mv $ZIP_FILENAME fetch-jft-${GITHUB_REF##*/}.zip
           mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh

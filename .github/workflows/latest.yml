@@ -66,9 +66,8 @@ jobs:
           export FILENAME=fetch-jft-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
-          git archive --format=zip --output=${ZIP_FILENAME} ${GITHUB_SHA}
-          mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
-          mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
+          make build
+          mkdir -p ${DIST_DIR_S3} && cp ${BUILD_DIR}/${ZIP_FILENAME} ${DIST_DIR_S3}/${ZIP_FILENAME}
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
