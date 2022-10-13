@@ -2,43 +2,19 @@ name: 'pull-request'
 
 on:
   pull_request:
-    branches: [ 'main' ]
+    branches: [ 'master' ]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        id: code-checkout
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 7.4
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Install dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        id: install-dependencies
-        run: make composer
+      - name: Validate composer.json and composer.lock
+        id: composer-validate
+        run: composer validate
 
       - name: PHPCS checker
         id: php-codesniffer
         run: make lint
-
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#fetch-jft'
-        if: failure()

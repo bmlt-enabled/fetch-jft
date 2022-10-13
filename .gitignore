@@ -1,6 +1,8 @@
+.project
+.settings/*
+.vscode/*
 .DS_Store
 .idea
-logs
+vendor/
+logs/
 *.zip
-/build
-/dist
