@@ -45,21 +45,20 @@ jobs:
       - name: Build package
         id: build-package
         run: |
-          export ZIP_FILENAME=${PLUGIN}-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
+          export ZIP_FILENAME=${PLUGIN}-${GITHUB_REF##*/}.zip
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
           echo ${GITHUB_SHA} > build.txt
           make build
-          zip $ZIP_FILENAME build.txt
-          mv $ZIP_FILENAME ${PLUGIN}-${GITHUB_REF##*/}.zip
+          zip $BUILD_DIR/$ZIP_FILENAME build.txt
           mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
           ./gh-release-notes.sh readme.txt "wp"
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
           chmod +x deploy-wordpress.sh
-          echo "ARTIFACT_PATH=./${PLUGIN}-${GITHUB_REF##*/}.zip" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=${PLUGIN}-${GITHUB_REF##*/}.zip" >> $GITHUB_ENV
+          echo "ARTIFACT_PATH=$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=${ZIP_FILENAME}" >> $GITHUB_ENV
 
       - name: Release beta
         if: contains(github.ref, 'beta')
