@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 6.0.2
-Stable tag: 1.6.9
+Tested up to: 6.2.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,10 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.7.0 =
+
+* Adds User-Agent headers.
 
 = 1.6.9 =
 
