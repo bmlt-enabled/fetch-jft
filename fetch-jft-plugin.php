@@ -3,7 +3,7 @@
 Plugin Name: Fetch JFT
 Plugin URI: https://wordpress.org/plugins/fetch-jft/
 Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.6.9
+Version: 1.7.0
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 */
 /* Disallow direct access to the plugin file */
@@ -39,6 +39,13 @@ function jft_func($atts = [])
             'layout'    =>  ''
         ),
         $atts
+    );
+
+    $headers = array(
+        'headers' => array(
+            'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:105.0) Gecko/20100101 Firefox/105.0 +fetchjft'
+        ),
+        'timeout' => 60
     );
 
     //Set language and layout - shortcode parameter overrides admin settings
@@ -115,7 +122,7 @@ function jft_func($atts = [])
     // Get the contents of JFT
     if ($jft_layout == 'block' && $jft_language == 'english') {
         libxml_use_internal_errors(true);
-        $url = utf8_encode(wp_remote_fopen($jft_language_url));
+        $url = utf8_encode(wp_remote_retrieve_body(wp_remote_get($jft_language_url, $headers)));
         $d = new DOMDocument();
         $d->validateOnParse = true;
         $d->loadHTML($url);
@@ -135,7 +142,7 @@ function jft_func($atts = [])
             } else {
                 $dom = new DOMDocument();
                 libxml_use_internal_errors(true);
-                $dom->loadHTML(utf8_encode(wp_remote_fopen($jft_language_url)));
+                $dom->loadHTML(utf8_encode(wp_remote_retrieve_body(wp_remote_get($jft_language_url, $headers))));
                 libxml_clear_errors();
                 libxml_use_internal_errors(false);
                 $values = array();
@@ -190,7 +197,7 @@ function jft_func($atts = [])
         $content .= '</div>';
     } elseif ($jft_language == 'italian') {
         date_default_timezone_set('Europe/Rome');
-        $italian_jft = json_decode(wp_remote_fopen($jft_language_url), true);
+        $italian_jft = json_decode(wp_remote_retrieve_body(wp_remote_get($jft_language_url, $headers)), true);
         $ret = '';
         foreach ($italian_jft as $content) {
             $ret .= $content['title'];
@@ -211,13 +218,13 @@ function jft_func($atts = [])
 CON;
         $sjft = new DOMDocument;
         libxml_use_internal_errors(true);
-        $sjft->loadHTML(mb_convert_encoding(wp_remote_fopen($spanish_jft), 'HTML-ENTITIES', "UTF-8"));
+        $sjft->loadHTML(mb_convert_encoding(wp_remote_retrieve_body(wp_remote_get($spanish_jft, $headers)), 'HTML-ENTITIES', "UTF-8"));
         libxml_clear_errors();
         libxml_use_internal_errors(false);
         $sbody = $sjft->saveHTML($sjft->getElementsByTagName('body')->item(0));
         $content .= str_replace(array( '<body>', '</body>' ), '', $sbody);
     } else {
-        $jft_get = wp_remote_get($jft_language_url);
+        $jft_get = wp_remote_get($jft_language_url, $headers);
         $jft_content_header = wp_remote_retrieve_header($jft_get, 'content-type');
         $jft_body = wp_remote_retrieve_body($jft_get);
 
