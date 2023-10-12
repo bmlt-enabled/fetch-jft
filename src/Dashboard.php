@@ -19,7 +19,7 @@ class Dashboard
         register_setting(self::SETTING_GROUP, 'custom_css_jft');
     }
 
-    public function createMenu(): void
+    public function createMenu(string $baseFile): void
     {
         add_options_page(
             esc_html__('Fetch JFT Plugin Settings'), // Page Title
@@ -28,6 +28,14 @@ class Dashboard
             'jft-plugin',                // Menu Slug
             [$this, 'drawSettings']  // Callback function to display the page content
         );
+        add_filter('plugin_action_links_' . $baseFile, [$this, 'settingsLink']);
+    }
+
+    public function settingsLink($links)
+    {
+        $settings_url = admin_url('options-general.php?page=jft-plugin');
+        $links[] = "<a href='{$settings_url}'>Settings</a>";
+        return $links;
     }
 
     public function drawSettings(): void
@@ -75,10 +83,10 @@ class Dashboard
                         <th scope="row">Layout</th>
                         <td>
                             <select id="jft_layout" name="jft_layout">
-                                <option value="table" <?php if (esc_attr(get_option('jft_layout'))=='table') {
+                                <option value="table" <?php if (esc_attr(get_option('jft_layout')) == 'table') {
                                     echo 'selected="selected"';
                                                       } ?>>Table (Raw HTML)</option>
-                                <option value="block" <?php if (esc_attr(get_option('jft_layout'))=='block') {
+                                <option value="block" <?php if (esc_attr(get_option('jft_layout')) == 'block') {
                                     echo 'selected="selected"';
                                                       } ?>>Block (For English)</option>
                             </select>

@@ -268,7 +268,7 @@ CON;
         $domDoc = $this->createDomDocument($data);
         $xpath = new \DOMXpath($domDoc);
         $body = $xpath->query("//" . $languageConfig['dom_element']);
-        $reading = new \DOMDocument;
+        $reading = new \DOMDocument();
         foreach ($body as $child) {
             $reading->appendChild($reading->importNode($child, true));
         }

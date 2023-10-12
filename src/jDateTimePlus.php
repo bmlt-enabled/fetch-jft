@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Jalali (Shamsi) DateTime Class. Supports years higher than 2038. Updated in 2016.
  *
@@ -218,14 +219,14 @@ class jDateTimePlus
                         } elseif ($jmonth >= 7 && $jmonth <= 11) {
                             $v = 30;
                         } elseif ($jmonth == 12 && $jyear % 4 == 3) {
-                            $v=30;
+                            $v = 30;
                         } elseif ($jmonth == 12 && $jyear % 4 != 3) {
                             $v = 29;
                         }
                         break;
                     //Year
                     case 'L':
-                        $tmpObj = new DateTime('@'.(time()-31536000));
+                        $tmpObj = new DateTime('@' . (time() - 31536000));
                         $v = $tmpObj->format('L');
                         break;
                     case 'o':
@@ -244,12 +245,12 @@ class jDateTimePlus
                         break;
                     //Full Dates
                     case 'c':
-                        $v  = $jyear.'-'.sprintf('%02d', $jmonth).'-'.sprintf('%02d', $jday).'T';
-                        $v .= $obj->format('H').':'.$obj->format('i').':'.$obj->format('s').$obj->format('P');
+                        $v  = $jyear . '-' . sprintf('%02d', $jmonth) . '-' . sprintf('%02d', $jday) . 'T';
+                        $v .= $obj->format('H') . ':' . $obj->format('i') . ':' . $obj->format('s') . $obj->format('P');
                         break;
                     case 'r':
-                        $v  = self::getDayNames($obj->format('D'), true).', '.sprintf('%02d', $jday).' '.self::getMonthNames($jmonth, true);
-                        $v .= ' '.$jyear.' '.$obj->format('H').':'.$obj->format('i').':'.$obj->format('s').' '.$obj->format('P');
+                        $v  = self::getDayNames($obj->format('D'), true) . ', ' . sprintf('%02d', $jday) . ' ' . self::getMonthNames($jmonth, true);
+                        $v .= ' ' . $jyear . ' ' . $obj->format('H') . ':' . $obj->format('i') . ':' . $obj->format('s') . ' ' . $obj->format('P');
                         break;
                     //Timezone
                     case 'e':
@@ -367,7 +368,7 @@ class jDateTimePlus
      */
     public static function mktime($hour, $minute, $second, $month, $day, $year, $jalali)
     {
-        if ($hour == '' and $minute  =='' and $second == '' and $month == '' and $day == '' and $year == '') {
+        if ($hour == '' and $minute  == '' and $second == '' and $month == '' and $day == '' and $year == '') {
             return mktime();
         } else {
             if ($jalali) {
@@ -558,7 +559,7 @@ class jDateTimePlus
         $jy = ($gy <= 1600) ? 0 : 979;
         $gy -= ($gy <= 1600) ? 621 : 1600;
         $gy2 = ($gm > 2) ? ($gy + 1) : $gy;
-        $days = (365 * $gy) + self::div($gy2 + 3, 4) - self::div($gy2 + 99, 100) + self::div($gy2 + 399, 400) - 80 + $gd + $g_d_m[$gm-1];
+        $days = (365 * $gy) + self::div($gy2 + 3, 4) - self::div($gy2 + 99, 100) + self::div($gy2 + 399, 400) - 80 + $gd + $g_d_m[$gm - 1];
         $jy += 33 * self::div($days, 12053);
         $days %= 12053;
         $jy += 4 * (self::div($days, 1461));
@@ -566,11 +567,11 @@ class jDateTimePlus
         $jy += self::div($days - 1, 365);
 
         if ($days > 365) {
-            $days = ($days-1) % 365;
+            $days = ($days - 1) % 365;
         }
 
         $jm = ($days < 186) ? 1 + self::div($days, 31) : 7 + self::div($days - 186, 30);
-        $jd = 1 + (($days < 186) ? ($days % 31) : (($days - 186) %30));
+        $jd = 1 + (($days < 186) ? ($days % 31) : (($days - 186) % 30));
 
         return [$jy, $jm, $jd];
     }
@@ -587,7 +588,7 @@ class jDateTimePlus
     {
         $gy = ($jy <= 979) ? 621 : 1600;
         $jy -= ($jy <= 979) ? 0 : 979;
-        $days = (365 * $jy) + (self::div($jy, 33) * 8) + self::div(($jy%33)+3, 4) + 78 + $jd + (($jm<7) ? ($jm-1) * 31:(($jm-7)*30) + 186);
+        $days = (365 * $jy) + (self::div($jy, 33) * 8) + self::div(($jy % 33) + 3, 4) + 78 + $jd + (($jm < 7) ? ($jm - 1) * 31 : (($jm - 7) * 30) + 186);
         $gy += 400 * self::div($days, 146097);
         $days %= 146097;
 
@@ -604,12 +605,12 @@ class jDateTimePlus
         $gy += self::div($days - 1, 365);
 
         if ($days > 365) {
-            $days = ($days-1) % 365;
+            $days = ($days - 1) % 365;
         }
 
-        $gd=$days+1;
+        $gd = $days + 1;
 
-        foreach (array(0,31,(($gy%4==0 and $gy%100!=0) or ($gy % 400 == 0)) ? 29:28,31,30,31,30,31,31,30,31,30,31) as $gm => $v) {
+        foreach (array(0,31,(($gy % 4 == 0 and $gy % 100 != 0) or ($gy % 400 == 0)) ? 29 : 28,31,30,31,30,31,31,30,31,30,31) as $gm => $v) {
             if ($gd <= $v) {
                 break;
             }
