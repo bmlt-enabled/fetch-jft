@@ -78,9 +78,10 @@ class Reading
                 'language' => 'japanese'
             ],
             'swedish' => [
-                'url' => 'https://www.nasverige.org/dagens-text-img/' . $this->getTimezoneDate('swedish') . '.jpg',
-                'footer' => '<div class=\'footer\'>Copyright ' . date("Y") . ' - Anonyma Narkomaner NA Sverige.</div>',
-                'dom_element' => '',
+                'url' => 'https://www.nasverige.org/dagens-text/',
+                'footer' => '',
+                'dom_element' => 'div[contains(@class, "container py-5")]',
+                'exclude_dom_element' => 'div[@class="row g-4 link-with-image undefined"]',
                 'language' => 'swedish'
             ],
             'danish' => [
@@ -179,16 +180,6 @@ class Reading
         return $content;
     }
 
-    protected function createDomDocument(string $data): \DOMDocument
-    {
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($data);
-        libxml_clear_errors();
-        libxml_use_internal_errors(false);
-        return $dom;
-    }
-
     protected function getTimezoneDate(string $language, $format = 'md'): string
     {
         $timezoneMap = [
@@ -212,7 +203,6 @@ class Reading
 
         switch ($language) {
             case 'german':
-            case 'swedish':
             case 'danish':
                 $content .= $this->generateImageContent($languageConfig);
                 break;
@@ -263,14 +253,55 @@ CON;
         return str_replace(['<body>', '</body>'], '', $body);
     }
 
+    protected function createDomDocument(string $data): \DOMDocument
+    {
+        $dom = new \DOMDocument();
+        try {
+            // Clear any previous XPath errors
+            libxml_use_internal_errors(true);
+            $dom->loadHTML($data);
+            libxml_clear_errors();
+        } catch (\Exception $e) {
+            error_log('Error parsing HTML: ' . $e->getMessage());
+        } finally {
+            // Clear XPath errors
+            libxml_use_internal_errors(false);
+        }
+        return $dom;
+    }
+
+    protected function excludeContent(\DOMDocument $dom, string $excludePath): void
+    {
+        // Clear any previous XPath errors
+        libxml_use_internal_errors(true);
+        $xpath = new \DOMXPath($dom);
+        try {
+            $divElements = $xpath->query('//' . $excludePath);
+            // Check if any elements were found
+            if ($divElements->length > 0) {
+                // currently only extracting first matching div, can iterate if needed
+                $targetDiv = $divElements->item(0);
+                $targetDiv->parentNode->removeChild($targetDiv);
+            }
+        } catch (\Exception $e) {
+            error_log('XPath query error: ' . $e->getMessage());
+        } finally {
+            // Clear XPath errors
+            libxml_use_internal_errors(false);
+        }
+    }
+
     protected function generateDefaultContent(string $data, array $languageConfig): string
     {
         $domDoc = $this->createDomDocument($data);
         $xpath = new \DOMXpath($domDoc);
-        $body = $xpath->query("//" . $languageConfig['dom_element']);
+        $elements = $xpath->query("//" . $languageConfig['dom_element']);
         $reading = new \DOMDocument();
-        foreach ($body as $child) {
-            $reading->appendChild($reading->importNode($child, true));
+        foreach ($elements as $element) {
+            $reading->appendChild($reading->importNode($element, true));
+        }
+        if (isset($languageConfig['exclude_dom_element']) && $languageConfig['exclude_dom_element'] != '') {
+            $this->excludeContent($reading, $languageConfig['exclude_dom_element']);
         }
         return $reading->saveHTML();
     }
