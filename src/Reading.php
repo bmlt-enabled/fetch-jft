@@ -2,87 +2,38 @@
 
 namespace Jft;
 
+use FetchMeditation\JFTLanguage;
+use FetchMeditation\JFTSettings;
+use FetchMeditation\JFT;
+
 require_once(__DIR__ . '/jDateTimePlus.php');
 
 class Reading
 {
     const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:105.0) Gecko/20100101 Firefox/105.0';
-    const DEFAULT_CHAR_ENCODING = "UTF-8";
     const CSS_CLASS = 'jft-rendered-element';
-
-    const DEFAULT_CONFIG = [
-        'url' => 'https://jftna.org/jft/',
-        'dom_element' => 'table',
-        'footer' => '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>',
-        'language' => 'english'
-    ];
 
     public function renderReading($atts = []): string
     {
-        $args = shortcode_atts(['layout' => '', 'language' => ''], $atts);
-        $layout = $this->sanitizeLayout($args);
-        $language = $this->sanitizeLanguage($args);
+        $layout = sanitize_text_field(strtolower($atts['layout'] ?? get_option('jft_layout')));
+        $language = sanitize_text_field(strtolower($atts['language'] ?? get_option('jft_language')));
         $languageConfig = $this->getLanguageConfig($language);
-        $response = $this->getJft($languageConfig);
-        if ($layout == "block" && $language != "english") {
-            return '<b>Fetch JFT Error</b> - Block layout can only be used with english. Language set: ' . $language;
-        }
-        return $this->getContent($layout, $response, $languageConfig);
+        return $this->generateContent($languageConfig, $layout);
     }
 
     protected function getLanguageConfig($language): array
     {
         $pdate = new \jDateTimePlus(true, true, 'Asia/Tehran');
         $languageConfig = [
-            'english' => self::DEFAULT_CONFIG,
-            'spanish' => [
-                'url' => 'https://forozonalatino.org/wp-content/uploads/meditaciones/' . $this->getTimezoneDate('spanish', 'm/d') . ".html",
-                'footer' => '',
-                'dom_element' => '',
-                'language' => 'spanish'
-            ],
-            'french' => [
-                'url' => 'https://jpa.narcotiquesanonymes.org/',
-                'footer' => '<br><p id="jft_copyright" class="jft-rendered-element"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-' . date("Y") . ', NA World Services, Inc. All Rights Reserved</a></p>',
-                'dom_element' => '*[@class=\'contenu-principal\']',
-                'language' => 'french'
-            ],
-            'portuguese' => [
-                'url' => 'https://www.na.org.br/meditacao',
-                'footer' => '',
-                'dom_element' => 'div[contains(@class, \'elementor-element-a5fb4b5\')]',
-                'language' => 'portuguese'
-            ],
-            'german' => [
-                'url' => 'https://www.narcotics-anonymous.de/nfh/files/' . $this->getTimezoneDate('german') . '.gif',
-                'footer' => '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.narcotics-anonymous.de/nur-fuer-heute-anmeldung.html" target="_blank">Anmeldung</a></div>',
-                'dom_element' => '',
-                'language' => 'german'
-            ],
-            'italian' => [
-                'url' => 'https://na-italia.org/get-jft',
-                'footer' => '<div class=\'footer\'>Narcotici Anonimi Italia: <a href="https://na-italia.org/" target="_blank">https://na-italia.org</a></div>',
-                'dom_element' => '*[@class=\'region region-content\']',
-                'language' => 'italian'
-            ],
-            'russian' => [
-                'url' => 'http://na-russia.org/eg',
-                'footer' => '<div class=\'footer\'>Copyright ' . date("Y") . ' - Анонимные Наркоманы. Русскоязычный Зональный Форум.</div>',
-                'dom_element' => '*[@class=\'module mod-box  deepest\']',
-                'language' => 'russian'
-            ],
-            'japanese' => [
-                'url' => 'http://najapan.org/just_for_today/',
-                'footer' => '',
-                'dom_element' => '*[@id=\'container\']',
-                'language' => 'japanese'
-            ],
-            'swedish' => [
-                'url' => 'https://www.nasverige.org/dagens-text-img/' . $this->getTimezoneDate('swedish') . '.jpg',
-                'footer' => '<div class=\'footer\'>Copyright ' . date("Y") . ' - Anonyma Narkomaner NA Sverige.</div>',
-                'dom_element' => '',
-                'language' => 'swedish'
-            ],
+            'english' => ['language' => 'english'],
+            'french' => ['language' => 'french'],
+            'italian' => ['language' => 'italian'],
+            'japanese' => ['language' => 'japanese'],
+            'portuguese' => ['language' => 'portuguese'],
+            'russian' => ['language' => 'russian'],
+            'spanish' => ['language' => 'spanish'],
+            'swedish' => ['language' => 'swedish'],
+            'german' => ['language' => 'german'],
             'danish' => [
                 'url' => 'https://nadanmark.dk/jft_images/' . $this->getTimezoneDate('danish') . '.jpg',
                 'footer' => '',
@@ -97,96 +48,7 @@ class Reading
             ]
         ];
 
-        return $languageConfig[$language] ?? self::DEFAULT_CONFIG;
-    }
-
-    protected function sanitizeLayout(array $args): string
-    {
-        return !empty($args['layout']) ? sanitize_text_field(strtolower($args['layout'])) : get_option('jft_layout');
-    }
-
-    protected function sanitizeLanguage(array $args): string
-    {
-        return !empty($args['language']) ? sanitize_text_field(strtolower($args['language'])) : get_option('jft_language');
-    }
-
-    protected function getJft(array $languageConfig): string
-    {
-        $charset = self::DEFAULT_CHAR_ENCODING;
-        $get = wp_remote_get($languageConfig['url'], ['headers' => ['User-Agent' => self::USER_AGENT], 'timeout' => 60]);
-        $contentTypeHeader = wp_remote_retrieve_header($get, 'content-type');
-        if ($contentTypeHeader) {
-            if (preg_match('/charset=([\w-]+)/i', $contentTypeHeader, $matches)) {
-                $charset = $matches[1];
-            }
-        }
-        $data = wp_remote_retrieve_body($get);
-        // if content is not image, get html entities
-        if ($contentTypeHeader && !strpos($contentTypeHeader, 'image')) {
-            $data = mb_convert_encoding($data, 'HTML-ENTITIES', $charset);
-        }
-        return $data;
-    }
-
-    protected function getContent(string $layout, string $data, array $languageConfig): string
-    {
-        return $layout === 'block' ? $this->generateBlockContent($data, $languageConfig) : $this->generateContent($data, $languageConfig);
-    }
-
-    protected function generateBlockContent(string $data, array $languageConfig): string
-    {
-        $domDoc = $this->createDomDocument($data);
-        $jft_ids = array('jft-date', 'jft-title', 'jft-page', 'jft-quote', 'jft-quote-source', 'jft-content', 'jft-thought', 'jft-copyright');
-        $i = 0;
-        $k = 1;
-        $content = '<div id="jft-container" class="' . self::CSS_CLASS . '">';
-
-        foreach ($domDoc->getElementsByTagName('tr') as $element) {
-            if ($i != 5) {
-                $formated_element = trim($element->nodeValue);
-                $content .= '<div id="' . $jft_ids[$i] . '" class="' . self::CSS_CLASS . '">' . $formated_element . '</div>';
-            } else {
-                $values = [];
-                $xpath = new \DOMXPath($domDoc);
-                foreach ($xpath->query('//tr') as $row) {
-                    $row_values = array();
-                    foreach ($xpath->query('td', $row) as $cell) {
-                        $innerHTML = '';
-                        $children = $cell->childNodes;
-                        foreach ($children as $child) {
-                            $innerHTML .= $child->ownerDocument->saveXML($child);
-                        }
-                        $row_values[] = $innerHTML;
-                    }
-                    $values[] = $row_values;
-                }
-                $break_array = preg_split('/<br[^>]*>/i', (join('', $values[5])));
-                $content .= '<div id="' . $jft_ids[$i] . '" class="' . self::CSS_CLASS . '">';
-                foreach ($break_array as $p) {
-                    if (!empty($p)) {
-                        $formated_element = '<p id="' . $jft_ids[$i] . '-' . $k . '" class="' . self::CSS_CLASS . '">' . trim($p) . '</p>';
-                        $content .= preg_replace("/<p[^>]*>([\s]|&nbsp;)*<\/p>/", '', $formated_element);
-                        $k++;
-                    }
-                }
-                $content .= '</div>';
-            }
-            $i++;
-        }
-        $content .= $languageConfig['footer'];
-        $content .= '</div>';
-        $content .= "<style>" . get_option('custom_css_jft') . "</style>";
-        return $content;
-    }
-
-    protected function createDomDocument(string $data): \DOMDocument
-    {
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($data);
-        libxml_clear_errors();
-        libxml_use_internal_errors(false);
-        return $dom;
+        return $languageConfig[$language] ?? [];
     }
 
     protected function getTimezoneDate(string $language, $format = 'md'): string
@@ -204,74 +66,135 @@ class Reading
         return $date->format($format);
     }
 
-    protected function generateContent(string $data, array $languageConfig): string
+    protected function generateContent(array $languageConfig, $layout): string
     {
-        $content = '<div id="jft-container" class="' . self::CSS_CLASS . '">';
-        $language = $languageConfig['language'];
-        $footer = $languageConfig['footer'];
-
-        switch ($language) {
-            case 'german':
-            case 'swedish':
+        switch ($languageConfig['language']) {
             case 'danish':
-                $content .= $this->generateImageContent($languageConfig);
+                $content = $this->generateImageContent($languageConfig);
                 break;
-            case 'italian':
-                $content .= $this->generateItalianContent($data);
-                break;
-            case 'spanish':
-                $content .= $this->generateSpanishContent($data);
+            case 'farsi':
+                $content = $this->generateFarsiContent($languageConfig);
                 break;
             default:
-                $content .= $this->generateDefaultContent($data, $languageConfig);
+                $content = $this->generateDefaultContent($languageConfig, $layout);
                 break;
         }
 
-        $content .= $footer;
-        $content .= '</div>';
         $content .= "<style>" . get_option('custom_css_jft') . "</style>";
         return $content;
     }
 
     protected function generateImageContent(array $languageConfig): string
     {
-        return '<img src="' . $languageConfig['url'] . '" class="jft-image">';
-    }
-
-    protected function generateItalianContent(string $data): string
-    {
-        $content = '';
-        $italianJft = json_decode($data, true);
-        foreach ($italianJft as $jftData) {
-            $content .= $jftData['title'];
-            $content .= $jftData['content'];
-            $content .= $jftData['excerpt'];
-        }
+        $content = '<img src="' . $languageConfig['url'] . '" class="jft-image">';
+        $content .= $languageConfig['footer'];
         return $content;
     }
 
-    protected function generateSpanishContent(string $data): string
+    protected function generateFarsiContent(array $languageConfig): string
     {
-
-        $domDoc = $this->createDomDocument($data);
-        $body = $domDoc->saveHTML($domDoc->getElementsByTagName('body')->item(0));
-        $body .= <<<CON
-    <style>
-        @import url("https://forozonalatino.org/wp-content/uploads/meditaciones/css/sxh.css");
-    </style>
-CON;
-        return str_replace(['<body>', '</body>'], '', $body);
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $get = wp_remote_get($languageConfig['url'], ['headers' => ['User-Agent' => self::USER_AGENT], 'timeout' => 60]);
+        $data = wp_remote_retrieve_body($get);
+        $dom->loadHTML('<?xml encoding="ISO-8859-1">' . $data);
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
+        $xpath = new \DOMXpath($dom);
+        $elements = $xpath->query("//" . $languageConfig['dom_element']);
+        $reading = new \DOMDocument();
+        foreach ($elements as $element) {
+            $reading->appendChild($reading->importNode($element, true));
+        }
+        $content = '<div id="jft-container" class="' . self::CSS_CLASS . '">';
+        $content .=  $reading->saveHTML();
+        $content .= $languageConfig['footer'];
+        $content .= '</div>';
+        return $content;
     }
 
-    protected function generateDefaultContent(string $data, array $languageConfig): string
+    protected function generateDefaultContent(array $languageConfig, string $layout): string
     {
-        $domDoc = $this->createDomDocument($data);
-        $xpath = new \DOMXpath($domDoc);
-        $body = $xpath->query("//" . $languageConfig['dom_element']);
-        $reading = new \DOMDocument();
-        foreach ($body as $child) {
-            $reading->appendChild($reading->importNode($child, true));
+        $selectedLanguage = match ($languageConfig['language']) {
+            'english' => JFTLanguage::English,
+            'french' => JFTLanguage::French,
+            'german' => JFTLanguage::German,
+            'italian' => JFTLanguage::Italian,
+            'japanese' => JFTLanguage::Japanese,
+            'portuguese' => JFTLanguage::Portuguese,
+            'russian' => JFTLanguage::Russian,
+            'spanish' => JFTLanguage::Spanish,
+            'swedish' => JFTLanguage::Swedish,
+            default => JFTLanguage::English
+        };
+
+        $settings = new JFTSettings($selectedLanguage);
+        $instance = JFT::getInstance($settings);
+        $entry = $instance->fetch();
+        return static::buildLayout($entry, $layout === "block");
+    }
+
+    private static function buildLayout(object $entry, bool $inBlock): string
+    {
+        $cssIdentifier = $inBlock ? 'jft' : 'jft-table';
+
+        $paragraphContent = '';
+        $count = 1;
+
+        foreach ($entry->content as $c) {
+            if ($inBlock) {
+                $paragraphContent .= "\n    <p id=\"$cssIdentifier-content-$count\" class=\"$cssIdentifier-rendered-element\">$c</p>";
+            } else {
+                $paragraphContent .= "$c<br><br>";
+            }
+            $count++;
         }
-        return $reading->saveHTML();
+        $paragraphContent .= "\n";
+
+        $content = "\n<div id=\"$cssIdentifier-container\" class=\"jft-rendered-element\">\n";
+        if (!$inBlock) {
+            $content .= '<table align="center">' . "\n";
+        }
+
+        $data = [
+            'date' => $entry->date,
+            'title' => $entry->title,
+            'page' => $entry->page,
+            'quote' => $entry->quote,
+            'source' => $entry->source,
+            'paragraphs' => $paragraphContent,
+            'thought' => $entry->thought,
+            'copyright' => $entry->copyright,
+        ];
+
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+
+            if ($key === 'quote' && !$inBlock) {
+                $element = '<i>' . $value . '</i>';
+            } elseif ($key === 'title' && !$inBlock) {
+                $element = '<h1>' . $value . '</h1>';
+            } elseif ($key === 'date' && !$inBlock) {
+                $element = '<h2>' . $value . '</h2>';
+            } else {
+                $element = $value;
+            }
+            if ($key === 'source') {
+                $key = 'quote-source';
+            }
+
+            if ($inBlock) {
+                $content .= "  <div id=\"$cssIdentifier-$key\" class=\"$cssIdentifier-rendered-element\">$element</div>\n";
+            } else {
+                $alignment = in_array($key, ['title', 'page', 'quote-source']) ? 'center' : 'left';
+                $lineBreak = in_array($key, ['quote-source', 'quote', 'thought', 'page']) ? '<br><br>' : '';
+                $content .= "<tr><td align=\"$alignment\">$element$lineBreak</td></tr>\n";
+            }
+        }
+
+        $content .= $inBlock ? "</div>\n" : "</table>\n</div>\n";
+        return $content;
     }
 }
