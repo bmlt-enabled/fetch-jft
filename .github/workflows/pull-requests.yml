@@ -16,6 +16,11 @@ jobs:
         id: composer-validate
         run: composer validate
 
+      - name: Setup PHP 🐫
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
       - name: PHPCS checker 🧹
         id: php-codesniffer
         run: make lint
