@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP 🐫
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
 
       - name: PHPCS checker 🧹
         id: php-codesniffer
@@ -52,7 +52,7 @@ jobs:
           export FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
-          make build
+          PROD=1 make build
           mkdir -p ${DIST_DIR_S3} && cp ${BUILD_DIR}/${ZIP_FILENAME} ${DIST_DIR_S3}/${ZIP_FILENAME}
 
       - name: configure aws credentials 🪪

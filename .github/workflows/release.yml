@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP 🐫
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
 
       - name: PHPCS checker 🧹
         id: php-codesniffer
@@ -42,6 +42,11 @@ jobs:
       - name: Check out code 🛒
         uses: actions/checkout@v4
 
+      - name: Setup PHP 🐫
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
       - name: Build package 🔧
         id: build-package
         run: |
@@ -49,7 +54,7 @@ jobs:
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
           echo ${GITHUB_SHA} > build.txt
-          make build
+          PROD=1 make build
           zip $BUILD_DIR/$ZIP_FILENAME build.txt
           mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
           echo "ARTIFACT_PATH=$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME" >> $GITHUB_ENV

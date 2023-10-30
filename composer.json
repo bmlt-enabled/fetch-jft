@@ -8,6 +8,9 @@
       "name": "pjaudiomv"
     }
   ],
+  "require": {
+    "bmlt/fetch-meditation": "1.0.7"
+  },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*"
   }

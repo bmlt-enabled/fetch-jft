@@ -79,7 +79,7 @@ class Dashboard
                             <p class="description">Choose the language for the JFT Display.<br> insert [jft] shortcode on your page or post. <strong>Languages other then English only works with raw HTML layout.</strong></p>
                         </td>
                     </tr>
-                    <tr valign="top">
+                    <tr valign="top" id="layout-container">
                         <th scope="row">Layout</th>
                         <td>
                             <select id="jft_layout" name="jft_layout">
@@ -88,9 +88,9 @@ class Dashboard
                                                       } ?>>Table (Raw HTML)</option>
                                 <option value="block" <?php if (esc_attr(get_option('jft_layout')) == 'block') {
                                     echo 'selected="selected"';
-                                                      } ?>>Block (For English)</option>
+                                                      } ?>>Block (CSS)</option>
                             </select>
-                            <p class="description"><strong>Only for English.</strong> Change between raw HTML Table and CSS block elements.</p>
+                            <p class="description">Change between raw HTML Table and CSS block elements.</p>
                         </td>
                     </tr>
                     <tr valign="top">
