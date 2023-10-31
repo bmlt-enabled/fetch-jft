@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "bmlt/fetch-meditation": "1.0.7"
+    "bmlt/fetch-meditation": "1.0.9"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*"
