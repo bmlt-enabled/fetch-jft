@@ -22,7 +22,7 @@ jobs:
         id: php-codesniffer
         run: make lint
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -37,6 +37,8 @@ jobs:
       GITHUB_RELEASE_FILENAME: "fetch-jft.zip"
       PLUGIN: "fetch-jft"
       MAINFILE: "fetch-jft-plugin.php"
+    permissions:
+      contents: write
     needs: [ lint ]
     steps:
       - name: Check out code 🛒
@@ -70,7 +72,7 @@ jobs:
           echo "RELEASE_TYPE=${RELEASE_TYPE}" >> $GITHUB_ENV
 
       - name: Create Release 🎉
-        uses: ncipollo/release-action@v1.11.1
+        uses: ncipollo/release-action@v1.13.0
         if: github.ref_type == 'tag'
         with:
           artifacts: ${{ env.ARTIFACT_PATH }}

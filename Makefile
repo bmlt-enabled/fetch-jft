@@ -35,6 +35,6 @@ composer: $(VENDOR_AUTOLOAD) ## Runs composer install
 lint: composer ## PHP Lint
 	vendor/squizlabs/php_codesniffer/bin/phpcs
 
-.PHONY: lint-fix
-lint-fix: composer ## PHP Lint Fix
+.PHONY: fmt
+fmt: composer ## PHP Format
 	vendor/squizlabs/php_codesniffer/bin/phpcbf
