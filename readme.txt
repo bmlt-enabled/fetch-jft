@@ -55,6 +55,10 @@ This section describes how to install the plugin and get it working.
 * Migrated to fetch meditation lib.
 * Additional language support for block/table layout.
 
+= 1.8.3 =
+
+* Fix for Spanish JFT.
+
 = 1.8.2 =
 
 * Fix for NA Sweden.
