@@ -76,7 +76,7 @@ class Dashboard
                                 }
                                 ?>
                             </select>
-                            <p class="description">Choose the language for the JFT Display.<br> insert [jft] shortcode on your page or post. <strong>Languages other then English only works with raw HTML layout.</strong></p>
+                            <p class="description">Choose the language for the JFT Display.<br> insert [jft] shortcode on your page or post. <strong>Danish and Arabic languages only work with raw HTML layout.</strong></p>
                         </td>
                     </tr>
                     <tr valign="top" id="layout-container">
