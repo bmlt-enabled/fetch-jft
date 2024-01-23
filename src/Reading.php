@@ -36,7 +36,7 @@ class Reading
         $languageConfig = [
             'english' => self::DEFAULT_CONFIG,
             'spanish' => [
-                'url' => 'https://forozonalatino.org/wp-content/uploads/meditaciones/' . $this->getTimezoneDate('spanish', 'm/d') . ".html",
+                'url' => 'https://fzla.org/wp-content/uploads/meditaciones/' . $this->getTimezoneDate('spanish', 'm/d') . ".html",
                 'footer' => '',
                 'dom_element' => '',
                 'language' => 'spanish'
