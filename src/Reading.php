@@ -43,7 +43,7 @@ class Reading
             ],
             'french' => [
                 'url' => 'https://jpa.narcotiquesanonymes.org/',
-                'footer' => '<br><p id="jft_copyright" class="jft-rendered-element"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-' . date("Y") . ', NA World Services, Inc. All Rights Reserved</a></p>',
+                'footer' => '<br><p id="jft_copyright" class="jft-rendered-element"><a href="https://www.na.org/" target="_blank">Copyright (c) 2007-' . gmdate("Y") . ', NA World Services, Inc. All Rights Reserved</a></p>',
                 'dom_element' => '*[@class=\'contenu-principal\']',
                 'language' => 'french'
             ],
@@ -67,7 +67,7 @@ class Reading
             ],
             'russian' => [
                 'url' => 'http://na-russia.org/eg',
-                'footer' => '<div class=\'footer\'>Copyright ' . date("Y") . ' - Анонимные Наркоманы. Русскоязычный Зональный Форум.</div>',
+                'footer' => '<div class=\'footer\'>Copyright ' . gmdate("Y") . ' - Анонимные Наркоманы. Русскоязычный Зональный Форум.</div>',
                 'dom_element' => '*[@class=\'module mod-box  deepest\']',
                 'language' => 'russian'
             ],

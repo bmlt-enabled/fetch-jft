@@ -16,12 +16,13 @@ class Widget extends \WP_Widget
     public function widget($args, $instance): void
     {
         $reading = new Reading();
-        echo $args['before_widget'];
-        if (! empty($instance['title'])) {
-            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
+        echo wp_kses_post($args['before_widget']);
+        if (!empty($instance['title'])) {
+            $title = apply_filters('widget_title', $instance['title']);
+            echo wp_kses_post($args['before_title']) . esc_html($title) . wp_kses_post($args['after_title']);
         }
-        echo $reading->renderReading();
-        echo $args['after_widget'];
+        echo wp_kses_post($reading->renderReading());
+        echo wp_kses_post($args['after_widget']);
     }
 
     public function form($instance): void
@@ -45,7 +46,7 @@ class Widget extends \WP_Widget
     public function update($newInstance, $oldInstance): array
     {
         $instance = array();
-        $instance['title'] = (! empty($newInstance['title']) ) ? strip_tags($newInstance['title']) : '';
+        $instance['title'] = (! empty($newInstance['title']) ) ? wp_strip_all_tags($newInstance['title']) : '';
         return $instance;
     }
 }

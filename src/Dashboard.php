@@ -71,7 +71,7 @@ class Dashboard
 
                                 foreach ($languages as $value => $label) {
                                     $selected = $selectedLanguage === $value ? 'selected="selected"' : '';
-                                    echo "<option value='$value' $selected>$label</option>";
+                                    echo '<option value="' . esc_attr($value) . '" ' . esc_attr($selected) . '>' . esc_html($label) . '</option>';
                                 }
                                 ?>
                             </select>
