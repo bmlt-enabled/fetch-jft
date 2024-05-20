@@ -16,7 +16,6 @@ class Dashboard
     {
         register_setting(self::SETTING_GROUP, 'jft_layout');
         register_setting(self::SETTING_GROUP, 'jft_language');
-        register_setting(self::SETTING_GROUP, 'custom_css_jft');
     }
 
     public function createMenu(string $baseFile): void
@@ -91,12 +90,6 @@ class Dashboard
                                                       } ?>>Block (For English)</option>
                             </select>
                             <p class="description"><strong>Only for English.</strong> Change between raw HTML Table and CSS block elements.</p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row">Custom CSS</th>
-                        <td>
-                            <textarea id="custom_css_jft" name="custom_css_jft" cols="100" rows="10"><?php echo get_option('custom_css_jft'); ?></textarea>
                         </td>
                     </tr>
                 </table>
