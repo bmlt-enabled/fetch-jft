@@ -103,12 +103,12 @@ class Reading
 
     protected function sanitizeLayout(array $args): string
     {
-        return !empty($args['layout']) ? sanitize_text_field(strtolower($args['layout'])) : get_option('jft_layout');
+        return !empty($args['layout']) ? sanitize_text_field(strtolower($args['layout'])) : sanitize_text_field(get_option('jft_layout'));
     }
 
     protected function sanitizeLanguage(array $args): string
     {
-        return !empty($args['language']) ? sanitize_text_field(strtolower($args['language'])) : get_option('jft_language');
+        return !empty($args['language']) ? sanitize_text_field(strtolower($args['language'])) : sanitize_text_field(get_option('jft_language'));
     }
 
     protected function getJft(array $languageConfig): string
@@ -176,7 +176,6 @@ class Reading
         }
         $content .= $languageConfig['footer'];
         $content .= '</div>';
-        $content .= "<style>" . get_option('custom_css_jft') . "</style>";
         return $content;
     }
 
@@ -219,7 +218,6 @@ class Reading
 
         $content .= $footer;
         $content .= '</div>';
-        $content .= "<style>" . get_option('custom_css_jft') . "</style>";
         return $content;
     }
 

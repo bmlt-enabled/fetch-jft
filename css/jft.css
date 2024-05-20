@@ -1,0 +1,42 @@
+#jft-date {
+    text-align: center;
+    font-size: x-large;
+}
+
+#jft-title {
+    text-align: center;
+    font-size: large;
+    font-style: italic;
+}
+
+#jft-page {
+    font-size: medium;
+    text-align: right;
+}
+
+#jft-quote {
+    text-align: center;
+    font-size: medium;
+    font-style: italic;
+}
+
+#jft-quote-source {
+    text-align: center;
+    font-size: small;
+    font-style: italic;
+    margin-bottom: 1em;
+}
+
+#jft-thought {
+    margin-left:20%;
+    margin-right: 20%;
+    font-style: italic;
+    margin-bottom: 2em;
+}
+
+#jft-copyright {
+    font-style: italic;
+    text-align: center;
+    font-size: x-small;
+    margin-bottom: 2em;
+}
