@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name:       Fetch JFT
  * Plugin URI:        https://wordpress.org/plugins/fetch-jft/
@@ -14,7 +15,7 @@
 
 namespace Jft;
 
-if ( ! defined( 'WPINC' ) ) {
+if (! defined('WPINC')) {
     die;
 }
 
