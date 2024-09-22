@@ -1,19 +1,21 @@
 <?php
-
-/*
-Plugin Name: Fetch JFT
-Plugin URI: https://wordpress.org/plugins/fetch-jft/
-Author: bmlt-enabled
-Description: This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
-Version: 1.8.4
-Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
-*/
-/* Disallow direct access to the plugin file */
+/**
+ * Plugin Name:       Fetch JFT
+ * Plugin URI:        https://wordpress.org/plugins/fetch-jft/
+ * Description:       This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well.
+ * Install:           Drop this directory into the "wp-content/plugins/" directory and activate it.
+ * Contributors:      pjaudiomv, bmltenabled
+ * Authors:           bmltenabled
+ * Version:           1.8.5
+ * Requires PHP:      7.3
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 namespace Jft;
 
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
-    die('Sorry, but you cannot access this page directly.');
+if ( ! defined( 'WPINC' ) ) {
+    die;
 }
 
 spl_autoload_register(function (string $class) {
