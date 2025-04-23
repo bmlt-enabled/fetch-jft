@@ -11,7 +11,7 @@ class Reading
     const CSS_CLASS = 'jft-rendered-element';
 
     const DEFAULT_CONFIG = [
-        'url' => 'https://jftna.org/jft/',
+        'url' => 'https://jft.na.org/',
         'dom_element' => 'table',
         'footer' => '<div align="right" id="jft-subscribe" class="jft-rendered-element"><a href="https://www.jftna.org/jft-subscription.htm" target="_blank">Subscribe</a></div>',
         'language' => 'english'
@@ -19,10 +19,11 @@ class Reading
 
     public function renderReading($atts = []): string
     {
-        $args = shortcode_atts(['layout' => '', 'language' => ''], $atts);
+        $args = shortcode_atts(['layout' => '', 'language' => '', 'timezone' => ''], $atts);
         $layout = $this->sanitizeLayout($args);
         $language = $this->sanitizeLanguage($args);
-        $languageConfig = $this->getLanguageConfig($language);
+        $timezone = $this->sanitizeTimezone($args);
+        $languageConfig = $this->getLanguageConfig($language, $timezone);
         $response = $this->getJft($languageConfig);
         if ($layout == "block" && $language != "english") {
             return '<b>Fetch JFT Error</b> - Block layout can only be used with english. Language set: ' . $language;
@@ -30,11 +31,27 @@ class Reading
         return $this->getContent($layout, $response, $languageConfig);
     }
 
-    protected function getLanguageConfig($language): array
+    protected function getLanguageConfig($language, $timezone = ''): array
     {
         $pdate = new \jDateTimePlus(true, true, 'Asia/Tehran');
+
+        // Check for timezone setting for English
+        $timezoneParam = '';
+        if ($language === 'english') {
+            // Prioritize shortcode timezone parameter over global setting
+            $timezone_setting = !empty($timezone) ? $timezone : get_option('jft_timezone');
+            if (!empty($timezone_setting)) {
+                $timezoneParam = '?timeZone=' . urlencode($timezone_setting);
+            }
+        }
+
         $languageConfig = [
-            'english' => self::DEFAULT_CONFIG,
+            'english' => [
+                'url' => self::DEFAULT_CONFIG['url'] . $timezoneParam,
+                'dom_element' => self::DEFAULT_CONFIG['dom_element'],
+                'footer' => self::DEFAULT_CONFIG['footer'],
+                'language' => self::DEFAULT_CONFIG['language']
+            ],
             'spanish' => [
                 'url' => 'https://fzla.org/wp-content/uploads/meditaciones/' . $this->getTimezoneDate('spanish', 'm/d') . ".html",
                 'footer' => '',
@@ -109,6 +126,11 @@ class Reading
     protected function sanitizeLanguage(array $args): string
     {
         return !empty($args['language']) ? sanitize_text_field(strtolower($args['language'])) : sanitize_text_field(get_option('jft_language'));
+    }
+
+    protected function sanitizeTimezone(array $args): string
+    {
+        return !empty($args['timezone']) ? sanitize_text_field($args['timezone']) : '';
     }
 
     protected function getJft(array $languageConfig): string

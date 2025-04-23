@@ -2,8 +2,8 @@
 
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 6.6
-Stable tag: 1.8.5
+Tested up to: 6.8
+Stable tag: 1.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,10 @@ This section describes how to install the plugin and get it working.
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.9.0 =
+
+* Added Time Zone support for English.
 
 = 1.8.5 =
 
