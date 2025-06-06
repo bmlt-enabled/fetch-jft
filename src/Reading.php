@@ -65,9 +65,10 @@ class Reading
                 'language' => 'french'
             ],
             'portuguese' => [
-                'url' => 'https://www.na.org.br/meditacao',
+                'url' => 'https://na-pt.org/sph/',
                 'footer' => '',
-                'dom_element' => 'div[contains(@class, \'elementor-element-a5fb4b5\')]',
+                'dom_element' => '*[@class=\'qx-rows\']',
+                'exclude_dom_element' => 'div[@id="qx-row-731"]',
                 'language' => 'portuguese'
             ],
             'german' => [
@@ -83,9 +84,9 @@ class Reading
                 'language' => 'italian'
             ],
             'russian' => [
-                'url' => 'http://na-russia.org/eg',
-                'footer' => '<div class=\'footer\'>Copyright ' . gmdate("Y") . ' - Анонимные Наркоманы. Русскоязычный Зональный Форум.</div>',
-                'dom_element' => '*[@class=\'module mod-box  deepest\']',
+                'url' => 'https://na-russia.org/meditation-today',
+                'footer' => '',
+                'dom_element' => '*[@class=\'flex flex-col col-span-2\']',
                 'language' => 'russian'
             ],
             'japanese' => [

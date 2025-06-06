@@ -7,7 +7,7 @@
  * Install:           Drop this directory into the "wp-content/plugins/" directory and activate it.
  * Contributors:      pjaudiomv, bmltenabled
  * Authors:           bmltenabled
- * Version:           1.9.0
+ * Version:           1.9.1
  * Requires PHP:      7.3
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
