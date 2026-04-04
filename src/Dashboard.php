@@ -50,8 +50,8 @@ class Dashboard
     public function createMenu(string $baseFile): void
     {
         add_options_page(
-            esc_html__('Fetch JFT Plugin Settings'), // Page Title
-            esc_html__('Fetch JFT'),                 // Menu Title
+            esc_html__('Fetch JFT Plugin Settings', 'fetch-jft'), // Page Title
+            esc_html__('Fetch JFT', 'fetch-jft'),                 // Menu Title
             'manage_options',             // Capability
             'jft-plugin',                // Menu Slug
             [$this, 'drawSettings']  // Callback function to display the page content
@@ -62,7 +62,7 @@ class Dashboard
     public function settingsLink($links)
     {
         $settings_url = admin_url('options-general.php?page=jft-plugin');
-        $links[] = "<a href='{$settings_url}'>Settings</a>";
+        $links[] = '<a href="' . esc_url($settings_url) . '">' . esc_html__('Settings', 'fetch-jft') . '</a>';
         return $links;
     }
 
@@ -83,7 +83,7 @@ class Dashboard
     {
         ?>
         <div class="wrap">
-            <h1>Fetch JFT Plugin Settings</h1>
+            <h1><?php esc_html_e('Fetch JFT Plugin Settings', 'fetch-jft'); ?></h1>
             <form action="options.php" method="post">
                 <?php
                 settings_fields(self::SETTING_GROUP);
@@ -106,7 +106,7 @@ class Dashboard
                                 ];
                                 ?>
                     <tr valign="top" id="language-container">
-                        <th scope="row">Language</th>
+                        <th scope="row"><?php esc_html_e('Language', 'fetch-jft'); ?></th>
                         <td>
                             <?php
                             echo wp_kses(
@@ -114,46 +114,46 @@ class Dashboard
                                     'jft_language',
                                     $selectedLanguage,
                                     [
-                                        'danish' => 'Danish',
-                                        'english' => 'English',
-                                        'farsi' => 'Farsi',
-                                        'french' => 'French',
-                                        'german' => 'German',
-                                        'italian' => 'Italian',
-                                        'japanese' => 'Japanese',
-                                        'portuguese' => 'Portuguese',
-                                        'russian' => 'Russian',
-                                        'spanish' => 'Spanish',
-                                        'swedish' => 'Swedish',
+                                        'danish'     => __('Danish', 'fetch-jft'),
+                                        'english'    => __('English', 'fetch-jft'),
+                                        'farsi'      => __('Farsi', 'fetch-jft'),
+                                        'french'     => __('French', 'fetch-jft'),
+                                        'german'     => __('German', 'fetch-jft'),
+                                        'italian'    => __('Italian', 'fetch-jft'),
+                                        'japanese'   => __('Japanese', 'fetch-jft'),
+                                        'portuguese' => __('Portuguese', 'fetch-jft'),
+                                        'russian'    => __('Russian', 'fetch-jft'),
+                                        'spanish'    => __('Spanish', 'fetch-jft'),
+                                        'swedish'    => __('Swedish', 'fetch-jft'),
                                     ]
                                 ),
                                 $allowed_html
                             );
                             ?>
                         </td>
-                        <p class="description">Choose the language for the JFT Display.<br> insert [jft] shortcode on your page or post. <strong>Languages other then English only works with raw HTML layout.</strong></p>
+                        <p class="description"><?php esc_html_e('Choose the language for the JFT Display.', 'fetch-jft'); ?><br> <?php esc_html_e('insert [jft] shortcode on your page or post.', 'fetch-jft'); ?> <strong><?php esc_html_e('Languages other than English only work with raw HTML layout.', 'fetch-jft'); ?></strong></p>
                     </tr>
                     </tr>
                     <tr valign="top" id="layout-container">
-                        <th scope="row">Layout</th>
+                        <th scope="row"><?php esc_html_e('Layout', 'fetch-jft'); ?></th>
                         <td>
                             <select id="jft_layout" name="jft_layout">
                                 <option value="table" <?php if (esc_attr(get_option('jft_layout')) == 'table') {
                                     echo 'selected="selected"';
-                                                      } ?>>Table (Raw HTML)</option>
+                                                      } ?>><?php esc_html_e('Table (Raw HTML)', 'fetch-jft'); ?></option>
                                 <option value="block" <?php if (esc_attr(get_option('jft_layout')) == 'block') {
                                     echo 'selected="selected"';
-                                                      } ?>>Block (For English)</option>
+                                                      } ?>><?php esc_html_e('Block (For English)', 'fetch-jft'); ?></option>
                             </select>
-                            <p class="description"><strong>Only for English.</strong> Change between raw HTML Table and CSS block elements.</p>
+                            <p class="description"><strong><?php esc_html_e('Only for English.', 'fetch-jft'); ?></strong> <?php esc_html_e('Change between raw HTML Table and CSS block elements.', 'fetch-jft'); ?></p>
                         </td>
                     </tr>
                     <tr valign="top" id="timezone-container">
-                        <th scope="row">Timezone (English Only)</th>
+                        <th scope="row"><?php esc_html_e('Timezone (English Only)', 'fetch-jft'); ?></th>
                         <td>
                             <?php
                             $timezone_options = [
-                                '' => 'Server Default',
+                                '' => __('Server Default', 'fetch-jft'),
                                 // North America
                                 'America/New_York' => 'America/New_York',
                                 'America/Chicago' => 'America/Chicago',
@@ -203,7 +203,7 @@ class Dashboard
                                 $allowed_html
                             );
                             ?>
-                            <p class="description">Only applies when English language is selected. Leave blank to use server default.</p>
+                            <p class="description"><?php esc_html_e('Only applies when English language is selected. Leave blank to use server default.', 'fetch-jft'); ?></p>
                         </td>
                     </tr>
                 </table>

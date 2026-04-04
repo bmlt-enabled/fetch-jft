@@ -7,10 +7,10 @@ class Widget extends \WP_Widget
     public function __construct()
     {
         $widgetOps = array(
-            'classname' => 'widget',
-            'description' => 'Displays the Just For Today',
+            'classname'   => 'widget',
+            'description' => __('Displays the Just For Today', 'fetch-jft'),
         );
-        parent::__construct('widget', 'Fetch JFT', $widgetOps);
+        parent::__construct('widget', __('Fetch JFT', 'fetch-jft'), $widgetOps);
     }
 
     public function widget($args, $instance): void
@@ -27,11 +27,11 @@ class Widget extends \WP_Widget
 
     public function form($instance): void
     {
-        $title = ! empty($instance['title']) ? $instance['title'] : esc_html__('Title', 'text_domain');
+        $title = ! empty($instance['title']) ? $instance['title'] : esc_html__('Title', 'fetch-jft');
         ?>
         <p>
             <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-                <?php esc_attr_e('Title:', 'text_domain'); ?>
+                <?php esc_attr_e('Title:', 'fetch-jft'); ?>
             </label>
             <input
                 class="widefat"

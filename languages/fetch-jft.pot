@@ -1,0 +1,153 @@
+# Copyright (C) 2026 
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Fetch JFT 1.9.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fetch-jft\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-04T04:08:53+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: fetch-jft\n"
+
+#. Plugin Name of the plugin
+#: fetch-jft-plugin.php
+#: src/Dashboard.php:54
+#: src/Widget.php:13
+msgid "Fetch JFT"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: fetch-jft-plugin.php
+msgid "https://wordpress.org/plugins/fetch-jft/"
+msgstr ""
+
+#. Description of the plugin
+#: fetch-jft-plugin.php
+msgid "This is a plugin that fetches the Just For Today from NAWS and puts it on your site Simply add [jft] shortcode to your page. Fetch JFT Widget can be added to your sidebar or footer as well."
+msgstr ""
+
+#: src/Dashboard.php:53
+#: src/Dashboard.php:86
+msgid "Fetch JFT Plugin Settings"
+msgstr ""
+
+#: src/Dashboard.php:65
+msgid "Settings"
+msgstr ""
+
+#: src/Dashboard.php:109
+msgid "Language"
+msgstr ""
+
+#: src/Dashboard.php:117
+msgid "Danish"
+msgstr ""
+
+#: src/Dashboard.php:118
+msgid "English"
+msgstr ""
+
+#: src/Dashboard.php:119
+msgid "Farsi"
+msgstr ""
+
+#: src/Dashboard.php:120
+msgid "French"
+msgstr ""
+
+#: src/Dashboard.php:121
+msgid "German"
+msgstr ""
+
+#: src/Dashboard.php:122
+msgid "Italian"
+msgstr ""
+
+#: src/Dashboard.php:123
+msgid "Japanese"
+msgstr ""
+
+#: src/Dashboard.php:124
+msgid "Portuguese"
+msgstr ""
+
+#: src/Dashboard.php:125
+msgid "Russian"
+msgstr ""
+
+#: src/Dashboard.php:126
+msgid "Spanish"
+msgstr ""
+
+#: src/Dashboard.php:127
+msgid "Swedish"
+msgstr ""
+
+#: src/Dashboard.php:134
+msgid "Choose the language for the JFT Display."
+msgstr ""
+
+#: src/Dashboard.php:134
+msgid "insert [jft] shortcode on your page or post."
+msgstr ""
+
+#: src/Dashboard.php:134
+msgid "Languages other than English only work with raw HTML layout."
+msgstr ""
+
+#: src/Dashboard.php:138
+msgid "Layout"
+msgstr ""
+
+#: src/Dashboard.php:143
+msgid "Table (Raw HTML)"
+msgstr ""
+
+#: src/Dashboard.php:146
+msgid "Block (For English)"
+msgstr ""
+
+#: src/Dashboard.php:148
+msgid "Only for English."
+msgstr ""
+
+#: src/Dashboard.php:148
+msgid "Change between raw HTML Table and CSS block elements."
+msgstr ""
+
+#: src/Dashboard.php:152
+msgid "Timezone (English Only)"
+msgstr ""
+
+#: src/Dashboard.php:156
+msgid "Server Default"
+msgstr ""
+
+#: src/Dashboard.php:206
+msgid "Only applies when English language is selected. Leave blank to use server default."
+msgstr ""
+
+#: src/Reading.php:29
+msgid "Fetch JFT Error"
+msgstr ""
+
+#: src/Reading.php:29
+msgid "Block layout can only be used with English. Language set:"
+msgstr ""
+
+#: src/Widget.php:11
+msgid "Displays the Just For Today"
+msgstr ""
+
+#: src/Widget.php:30
+msgid "Title"
+msgstr ""
+
+#: src/Widget.php:34
+msgid "Title:"
+msgstr ""

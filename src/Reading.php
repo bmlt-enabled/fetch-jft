@@ -26,7 +26,7 @@ class Reading
         $languageConfig = $this->getLanguageConfig($language, $timezone);
         $response = $this->getJft($languageConfig);
         if ($layout == "block" && $language != "english") {
-            return '<b>Fetch JFT Error</b> - Block layout can only be used with english. Language set: ' . $language;
+            return '<b>' . esc_html__('Fetch JFT Error', 'fetch-jft') . '</b> - ' . esc_html__('Block layout can only be used with English. Language set:', 'fetch-jft') . ' ' . esc_html($language);
         }
         return $this->getContent($layout, $response, $languageConfig);
     }

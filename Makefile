@@ -41,3 +41,15 @@ mysql:  ## Runs mysql cli in mysql container
 .PHONY: bash
 bash:  ## Runs bash shell in wordpress container
 	docker exec -it -w /var/www/html $(BASENAME)-wordpress-1 bash
+
+.PHONY: makepot
+makepot:  ## Generate POT translation template (requires wp-cli)
+	wp i18n make-pot . languages/fetch-jft.pot --domain=fetch-jft --exclude=vendor,build,dist
+
+.PHONY: msgfmt
+msgfmt:  ## Compile all .po files in languages/ to .mo binaries
+	@for po in languages/*.po; do \
+		mo="$${po%.po}.mo"; \
+		echo "Compiling $$po -> $$mo"; \
+		msgfmt -o "$$mo" "$$po"; \
+	done
