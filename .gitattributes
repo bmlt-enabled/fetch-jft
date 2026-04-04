@@ -10,3 +10,4 @@ Makefile export-ignore
 /docs export-ignore
 /.github export-ignore
 .phpcs.xml export-ignore
+/languages export-ignore

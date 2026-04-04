@@ -2,7 +2,7 @@
 
 Contributors: pjaudiomv, klgrimley, bmltenabled
 Tags: jft, just for today, narcotics anonymous, na
-Tested up to: 6.8
+Tested up to: 7.0
 Stable tag: 1.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
