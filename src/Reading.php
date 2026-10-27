@@ -103,7 +103,7 @@ class Reading
                 'language' => 'swedish'
             ],
             'danish' => [
-                'url' => 'https://nadanmark.dk/jft_images/' . $this->getTimezoneDate('danish') . '.jpg',
+                'url' => 'https://www.nadanmark.dk/jft.json',
                 'footer' => '',
                 'dom_element' => '',
                 'language' => 'danish'
@@ -225,8 +225,10 @@ class Reading
 
         switch ($language) {
             case 'german':
-            case 'danish':
                 $content .= $this->generateImageContent($languageConfig);
+                break;
+            case 'danish':
+                $content .= $this->generateDanishContent($data);
                 break;
             case 'italian':
                 $content .= $this->generateItalianContent($data);
