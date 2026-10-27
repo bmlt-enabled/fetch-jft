@@ -251,6 +251,56 @@ class Reading
         return '<img src="' . $languageConfig['url'] . '" class="jft-image">';
     }
 
+    protected function generateDanishContent(string $data): string
+    {
+        $entries = json_decode($data, true);
+        if (!is_array($entries)) {
+            return '';
+        }
+
+        // The feed labels each entry with a Danish month name, so we map the current
+        // month onto the same spelling to pick today's entry out of the full year.
+        $months = [
+            1 => 'januar', 2 => 'februar', 3 => 'marts', 4 => 'april',
+            5 => 'maj', 6 => 'juni', 7 => 'juli', 8 => 'august',
+            9 => 'september', 10 => 'oktober', 11 => 'november', 12 => 'december',
+        ];
+
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Copenhagen'));
+        $day = (int) $now->format('j');
+        $month = $months[(int) $now->format('n')];
+
+        $today = null;
+        foreach ($entries as $entry) {
+            if ((int) ($entry['day'] ?? 0) === $day && ($entry['month'] ?? '') === $month) {
+                $today = $entry;
+                break;
+            }
+        }
+        if ($today === null) {
+            return '';
+        }
+
+        $content = '<div id="jft-title" class="' . self::CSS_CLASS . '">' . esc_html($today['title'] ?? '') . '</div>';
+        $content .= '<div id="jft-date" class="' . self::CSS_CLASS . '">' . esc_html(trim(($today['day'] ?? '') . '. ' . ($today['month'] ?? ''))) . '</div>';
+        $content .= '<div id="jft-quote" class="' . self::CSS_CLASS . '">' . esc_html($today['quote'] ?? '') . '</div>';
+        $content .= '<div id="jft-quote-source" class="' . self::CSS_CLASS . '">' . esc_html($today['source'] ?? '') . '</div>';
+
+        $content .= '<div id="jft-content" class="' . self::CSS_CLASS . '">';
+        $paragraphs = preg_split('/\n/', trim($today['text'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($paragraphs as $paragraph) {
+            $paragraph = trim($paragraph);
+            if ($paragraph !== '') {
+                $content .= '<p class="' . self::CSS_CLASS . '">' . esc_html($paragraph) . '</p>';
+            }
+        }
+        $content .= '</div>';
+
+        $content .= '<div id="jft-thought" class="' . self::CSS_CLASS . '">' . esc_html($today['jft'] ?? '') . '</div>';
+
+        return $content;
+    }
+
     protected function generateItalianContent(string $data): string
     {
         $content = '';
